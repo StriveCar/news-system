@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!--导入配置 -->
+    <properties resource="application.properties"/>
+
+    <!-- context 一般是一个数据源一个context -->
+    <context id="default" targetRuntime="MyBatis3DynamicSql" defaultModelType="flat">
+
+        <!--jdbc的数据库连接 -->
+        <jdbcConnection
+                driverClass="${spring.datasource.driver-class-name}"
+                connectionURL="${spring.datasource.url}"
+                userId="${spring.datasource.username}"
+                password="${spring.datasource.password}">
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+
+        <!-- 实体类 -->
+        <javaModelGenerator
+                targetPackage="com.news.NS.domain"
+                targetProject=".\src\main\java">
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- Mapper接口 -->
+        <javaClientGenerator type="ANNOTATEDMAPPER"
+                             targetPackage="com.news.NS.mapper"
+                             targetProject=".\src\main\java">
+        </javaClientGenerator>
+
+        <!-- 指定数据库表 -->
+        <table tableName="notification" domainObjectName="Notification"/>
+<!--        <table tableName="picture" domainObjectName="Picture"/>-->
+        <table tableName="news_complaint" domainObjectName="Complaint"/>
+        <table tableName="news_publisher_application" domainObjectName="Application"/>
+        <table tableName="news_collection" domainObjectName="Collection"/>
+<!--        <table tableName="user_focus" domainObjectName="Focus"/>-->
+        <table tableName="news_review" domainObjectName="NewsReview"/>
+        <table tableName="section" domainObjectName="Section"/>
+        <table tableName="second_level_comment" domainObjectName="SecondComment"/>
+        <table tableName="first_level_comment" domainObjectName="FirstComment"/>
+        <table tableName="news" domainObjectName="News"/>
+        <table tableName="user_info" domainObjectName="User"/>
+    </context>
+</generatorConfiguration>
