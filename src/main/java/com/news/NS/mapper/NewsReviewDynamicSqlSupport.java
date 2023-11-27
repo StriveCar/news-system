@@ -7,25 +7,25 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public final class NewsReviewDynamicSqlSupport {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9782927+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.521+08:00", comments="Source Table: news_review")
     public static final NewsReview newsReview = new NewsReview();
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9782927+08:00", comments="Source field: news_review.reviewer_id")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.521+08:00", comments="Source field: news_review.reviewer_id")
     public static final SqlColumn<Integer> reviewerId = newsReview.reviewerId;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9782927+08:00", comments="Source field: news_review.news_id")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.521+08:00", comments="Source field: news_review.news_id")
     public static final SqlColumn<Integer> newsId = newsReview.newsId;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source field: news_review.review_status")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.521+08:00", comments="Source field: news_review.review_status")
     public static final SqlColumn<Byte> reviewStatus = newsReview.reviewStatus;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source field: news_review.review_time")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.521+08:00", comments="Source field: news_review.review_time")
     public static final SqlColumn<Date> reviewTime = newsReview.reviewTime;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source field: news_review.remark")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.521+08:00", comments="Source field: news_review.remark")
     public static final SqlColumn<String> remark = newsReview.remark;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9782927+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.521+08:00", comments="Source Table: news_review")
     public static final class NewsReview extends SqlTable {
         public final SqlColumn<Integer> reviewerId = column("reviewer_id", JDBCType.INTEGER);
 

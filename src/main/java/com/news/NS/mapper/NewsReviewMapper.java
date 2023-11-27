@@ -34,31 +34,31 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface NewsReviewMapper {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     BasicColumn[] selectList = BasicColumn.columnList(reviewerId, newsId, reviewStatus, reviewTime, remark);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<NewsReview> insertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<NewsReview> multipleInsertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("NewsReviewResult")
     Optional<NewsReview> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="NewsReviewResult", value = {
         @Result(column="reviewer_id", property="reviewerId", jdbcType=JdbcType.INTEGER, id=true),
@@ -69,21 +69,21 @@ public interface NewsReviewMapper {
     })
     List<NewsReview> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, newsReview, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, newsReview, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int deleteByPrimaryKey(Integer reviewerId_, Integer newsId_) {
         return delete(c -> 
             c.where(reviewerId, isEqualTo(reviewerId_))
@@ -91,7 +91,7 @@ public interface NewsReviewMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int insert(NewsReview record) {
         return MyBatis3Utils.insert(this::insert, record, newsReview, c ->
             c.map(reviewerId).toProperty("reviewerId")
@@ -102,7 +102,7 @@ public interface NewsReviewMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int insertMultiple(Collection<NewsReview> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, newsReview, c ->
             c.map(reviewerId).toProperty("reviewerId")
@@ -113,7 +113,7 @@ public interface NewsReviewMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int insertSelective(NewsReview record) {
         return MyBatis3Utils.insert(this::insert, record, newsReview, c ->
             c.map(reviewerId).toPropertyWhenPresent("reviewerId", record::getReviewerId)
@@ -124,22 +124,22 @@ public interface NewsReviewMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9792865+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default Optional<NewsReview> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, newsReview, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default List<NewsReview> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, newsReview, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default List<NewsReview> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, newsReview, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default Optional<NewsReview> selectByPrimaryKey(Integer reviewerId_, Integer newsId_) {
         return selectOne(c ->
             c.where(reviewerId, isEqualTo(reviewerId_))
@@ -147,12 +147,12 @@ public interface NewsReviewMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, newsReview, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     static UpdateDSL<UpdateModel> updateAllColumns(NewsReview record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(reviewerId).equalTo(record::getReviewerId)
                 .set(newsId).equalTo(record::getNewsId)
@@ -161,7 +161,7 @@ public interface NewsReviewMapper {
                 .set(remark).equalTo(record::getRemark);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(NewsReview record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(reviewerId).equalToWhenPresent(record::getReviewerId)
                 .set(newsId).equalToWhenPresent(record::getNewsId)
@@ -170,7 +170,7 @@ public interface NewsReviewMapper {
                 .set(remark).equalToWhenPresent(record::getRemark);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int updateByPrimaryKey(NewsReview record) {
         return update(c ->
             c.set(reviewStatus).equalTo(record::getReviewStatus)
@@ -181,7 +181,7 @@ public interface NewsReviewMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9802837+08:00", comments="Source Table: news_review")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: news_review")
     default int updateByPrimaryKeySelective(NewsReview record) {
         return update(c ->
             c.set(reviewStatus).equalToWhenPresent(record::getReviewStatus)

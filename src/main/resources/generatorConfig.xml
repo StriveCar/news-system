@@ -36,7 +36,7 @@
 <!--        <table tableName="picture" domainObjectName="Picture"/>-->
         <table tableName="news_complaint" domainObjectName="Complaint"/>
         <table tableName="news_publisher_application" domainObjectName="Application"/>
-        <table tableName="news_collection" domainObjectName="Collection"/>
+        <table tableName="news_collection" domainObjectName="Collect"/>
 <!--        <table tableName="user_focus" domainObjectName="Focus"/>-->
         <table tableName="news_review" domainObjectName="NewsReview"/>
         <table tableName="section" domainObjectName="Section"/>

@@ -34,31 +34,31 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface NotificationMapper {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9623314+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.508+08:00", comments="Source Table: notification")
     BasicColumn[] selectList = BasicColumn.columnList(notificationId, userId, content, createTime, hasRead, type);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9563833+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.502+08:00", comments="Source Table: notification")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9573465+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.502+08:00", comments="Source Table: notification")
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9573465+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.502+08:00", comments="Source Table: notification")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<Notification> insertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9573465+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.503+08:00", comments="Source Table: notification")
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<Notification> multipleInsertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9583619+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.503+08:00", comments="Source Table: notification")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("NotificationResult")
     Optional<Notification> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9583619+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.504+08:00", comments="Source Table: notification")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="NotificationResult", value = {
         @Result(column="notification_id", property="notificationId", jdbcType=JdbcType.INTEGER, id=true),
@@ -70,28 +70,28 @@ public interface NotificationMapper {
     })
     List<Notification> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.95934+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.505+08:00", comments="Source Table: notification")
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.95934+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.505+08:00", comments="Source Table: notification")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, notification, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9603371+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.505+08:00", comments="Source Table: notification")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, notification, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9603371+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.505+08:00", comments="Source Table: notification")
     default int deleteByPrimaryKey(Integer notificationId_) {
         return delete(c -> 
             c.where(notificationId, isEqualTo(notificationId_))
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9603371+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.506+08:00", comments="Source Table: notification")
     default int insert(Notification record) {
         return MyBatis3Utils.insert(this::insert, record, notification, c ->
             c.map(notificationId).toProperty("notificationId")
@@ -103,7 +103,7 @@ public interface NotificationMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9613344+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.507+08:00", comments="Source Table: notification")
     default int insertMultiple(Collection<Notification> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, notification, c ->
             c.map(notificationId).toProperty("notificationId")
@@ -115,7 +115,7 @@ public interface NotificationMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9613344+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.507+08:00", comments="Source Table: notification")
     default int insertSelective(Notification record) {
         return MyBatis3Utils.insert(this::insert, record, notification, c ->
             c.map(notificationId).toPropertyWhenPresent("notificationId", record::getNotificationId)
@@ -127,34 +127,34 @@ public interface NotificationMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9633295+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.509+08:00", comments="Source Table: notification")
     default Optional<Notification> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, notification, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9633295+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.509+08:00", comments="Source Table: notification")
     default List<Notification> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, notification, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9643264+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.509+08:00", comments="Source Table: notification")
     default List<Notification> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, notification, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9643264+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.509+08:00", comments="Source Table: notification")
     default Optional<Notification> selectByPrimaryKey(Integer notificationId_) {
         return selectOne(c ->
             c.where(notificationId, isEqualTo(notificationId_))
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9643264+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.51+08:00", comments="Source Table: notification")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, notification, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9653233+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.51+08:00", comments="Source Table: notification")
     static UpdateDSL<UpdateModel> updateAllColumns(Notification record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(notificationId).equalTo(record::getNotificationId)
                 .set(userId).equalTo(record::getUserId)
@@ -164,7 +164,7 @@ public interface NotificationMapper {
                 .set(type).equalTo(record::getType);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9653233+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.51+08:00", comments="Source Table: notification")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(Notification record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(notificationId).equalToWhenPresent(record::getNotificationId)
                 .set(userId).equalToWhenPresent(record::getUserId)
@@ -174,7 +174,7 @@ public interface NotificationMapper {
                 .set(type).equalToWhenPresent(record::getType);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9663228+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.511+08:00", comments="Source Table: notification")
     default int updateByPrimaryKey(Notification record) {
         return update(c ->
             c.set(userId).equalTo(record::getUserId)
@@ -186,7 +186,7 @@ public interface NotificationMapper {
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9663228+08:00", comments="Source Table: notification")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.511+08:00", comments="Source Table: notification")
     default int updateByPrimaryKeySelective(Notification record) {
         return update(c ->
             c.set(userId).equalToWhenPresent(record::getUserId)

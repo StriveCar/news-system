@@ -7,28 +7,28 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public final class ApplicationDynamicSqlSupport {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source Table: news_publisher_application")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.516+08:00", comments="Source Table: news_publisher_application")
     public static final Application application = new Application();
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source field: news_publisher_application.user_id")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.517+08:00", comments="Source field: news_publisher_application.user_id")
     public static final SqlColumn<Integer> userId = application.userId;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source field: news_publisher_application.application_reason")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.517+08:00", comments="Source field: news_publisher_application.application_reason")
     public static final SqlColumn<String> applicationReason = application.applicationReason;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source field: news_publisher_application.application_status")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.517+08:00", comments="Source field: news_publisher_application.application_status")
     public static final SqlColumn<Byte> applicationStatus = application.applicationStatus;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source field: news_publisher_application.application_time")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.517+08:00", comments="Source field: news_publisher_application.application_time")
     public static final SqlColumn<Date> applicationTime = application.applicationTime;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source field: news_publisher_application.review_time")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.517+08:00", comments="Source field: news_publisher_application.review_time")
     public static final SqlColumn<Date> reviewTime = application.reviewTime;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source field: news_publisher_application.review_remark")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.517+08:00", comments="Source field: news_publisher_application.review_remark")
     public static final SqlColumn<String> reviewRemark = application.reviewRemark;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-25T17:58:01.9723051+08:00", comments="Source Table: news_publisher_application")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.516+08:00", comments="Source Table: news_publisher_application")
     public static final class Application extends SqlTable {
         public final SqlColumn<Integer> userId = column("user_id", JDBCType.INTEGER);
 
