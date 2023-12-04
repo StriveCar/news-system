@@ -1,4 +1,4 @@
-package com.news.NS.controller;
+package com.news.NS.common;
 
 import java.lang.annotation.*;
 

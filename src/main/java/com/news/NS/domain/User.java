@@ -120,4 +120,19 @@ public class User {
     public void setLastUpdateTime(Date lastUpdateTime) {
         this.lastUpdateTime = lastUpdateTime;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", account='" + account + '\'' +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", identification=" + identification +
+                ", createTime=" + createTime +
+                ", lastUpdateTime=" + lastUpdateTime +
+                '}';
+    }
 }
