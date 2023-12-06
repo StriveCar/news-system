@@ -28,8 +28,5 @@ public class AlertException extends RuntimeException {
         this.success = false;
     }
 
-    public Result<String> fail() {
-        return Result.fail(this.code, this.message, this.success);
-    }
 }
 

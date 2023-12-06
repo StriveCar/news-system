@@ -6,8 +6,8 @@ import lombok.ToString;
 @Data
 @ToString
 public class UserRoleChangeDTO {
-    private String userId;
+    private Integer userId;
 
-    private String identification;
+    private Byte identification;
 }
 

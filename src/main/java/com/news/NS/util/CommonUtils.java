@@ -1,14 +1,20 @@
 package com.news.NS.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.aliyuncs.CommonRequest;
+import com.aliyuncs.CommonResponse;
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
+import com.aliyuncs.http.MethodType;
+import com.aliyuncs.profile.DefaultProfile;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.UUID;
 
 public class CommonUtils {
@@ -127,4 +133,32 @@ public class CommonUtils {
         long webAppDateStart = startTimeCalendar.getTimeInMillis();
         return new Long[]{webAppDateStart, webAppDateEnd};
     }
+
+    public static Boolean send(String phone,String key){
+        DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou",
+                "LTAI5tBHMA1kKhhrdJzAy6jq","wBXkNBsmZYbKl3gvib0A9LC2C9CVrH");
+        IAcsClient client = new DefaultAcsClient(profile);
+        //request.setProtocol(ProtocolType.HTTPS);
+        SendSmsRequest request = new SendSmsRequest();
+        request.setSysRegionId("cn-hangzhou");
+//	    要发送给那个人的电话号码
+        request.setPhoneNumbers(phone);
+//      我们在阿里云设置的签名
+        request.setSignName("车立钧的博客");
+//	    我们在阿里云设置的模板
+        request.setTemplateCode("SMS_464051619");
+//	    在设置模板的时候有一个占位符
+        request.setTemplateParam("{\"code\":\""+key+"\"}");
+        try {
+            SendSmsResponse SendSmsResponse = client.getAcsResponse(request);
+            System.out.println("短信发送成功:"+key);
+            return true;
+        } catch (ServerException e) {
+            e.printStackTrace();
+        } catch (ClientException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

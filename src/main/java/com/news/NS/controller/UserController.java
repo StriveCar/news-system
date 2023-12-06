@@ -37,16 +37,16 @@ public class UserController {
     @PostMapping("/user/update/userInfo")
     @ApiOperation(value = "修改用户信息")
     public void updateUserInfoApi(@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
-        userService.updatePersonalInfo(userUpdateDTO);
+        userService.updateUserInfo(userUpdateDTO);
     }
 
     @GetMapping("/user/get/verifyCode")
     @ApiOperation(value = "获取六位验证码")
-    public Map<String, String> getVerifyCodeApi(@RequestParam("tel") String tel) {
-        return userService.getVerifyCode(tel);
+    public void getVerifyCodeApi(@RequestParam("tel") String tel) {
+        userService.getVerifyCode(tel);
     }
 
-    @PostMapping("/user/modifyPassword")
+    @PostMapping("/user/modify/password")
     @ApiOperation(value = "修改用户密码")
     public void updateUserPasswordApi(@Valid @RequestBody UserUpdatePwdDTO userUpdateDTO) {
         userService.updateUserPassword(userUpdateDTO);
@@ -63,5 +63,7 @@ public class UserController {
     public void changeRoleApi(@RequestBody UserRoleChangeDTO userRoleChangeDTO) {
         userService.changeUserRole(userRoleChangeDTO.getUserId(), userRoleChangeDTO.getIdentification());
     }
+
+
 }
 
