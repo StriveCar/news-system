@@ -4,16 +4,22 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.news.NS.common.AlertException;
 import com.news.NS.common.CommonConstant;
+import com.news.NS.common.domain.PageInfo;
+import com.news.NS.domain.News;
 import com.news.NS.domain.Section;
 import com.news.NS.common.domain.ResultCode;
+import com.news.NS.domain.vo.SectionNewsVo;
 import com.news.NS.mapper.NewsDynamicSqlSupport;
+import com.news.NS.mapper.NewsMapper;
 import com.news.NS.mapper.SectionDynamicSqlSupport;
 import com.news.NS.mapper.SectionMapper;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +35,9 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 public class SectionService {
     @Autowired
     private SectionMapper sectionMapper;
+
+    @Autowired
+    private NewsMapper newsMapper;
 
     public Section addSection(String sectionName) {
         SelectStatementProvider selectStatementProvider = select(count())
@@ -65,19 +74,44 @@ public class SectionService {
         }
     }
 
-    public List<Section> querySectionList(Integer page, Integer size) {
+    public PageInfo<Section> querySectionList(Integer page, Integer size) {
         SelectStatementProvider selectStatementProvider = select(sectionMapper.selectList)
                 .from(SectionDynamicSqlSupport.section)
                 .build().render(RenderingStrategies.MYBATIS3);
+        Page<Section> queryPageData = PageHelper.startPage(page, size);
         List<Section> sections = sectionMapper.selectMany(selectStatementProvider);
-        for (Section section : sections) {
-            SelectStatementProvider selectStatementProvider1 = select(sum(NewsDynamicSqlSupport.news.newsViews),count(NewsDynamicSqlSupport.news.newsId))
-                    .from(NewsDynamicSqlSupport.news)
-                    .where(NewsDynamicSqlSupport.sectionId,isEqualTo(section.getSectionId()))
-                    .and(NewsDynamicSqlSupport.publishStatus,isEqualTo(CommonConstant.NEWS_ISSUE))
-                    .build().render(RenderingStrategies.MYBATIS3);
 
+        if (sections.isEmpty()) {
+            throw new AlertException(ResultCode.SECTION_LIST_NOT_EXIST);
         }
-        return sections;
+        PageInfo<Section> pageInfo = new PageInfo<>();
+        pageInfo.setPageData(sectionMapper.selectMany(selectStatementProvider));
+        pageInfo.setPage(page);
+        pageInfo.setTotalSize(queryPageData.getTotal());
+        System.out.println(sections);
+        return pageInfo;
+    }
+
+    public PageInfo<SectionNewsVo> querySectionDataList(Integer page, Integer size) {
+        SelectStatementProvider selectStatementProvider = select(sectionMapper.selectList)
+                .from(SectionDynamicSqlSupport.section)
+                .build().render(RenderingStrategies.MYBATIS3);
+
+        Page<Section> queryPageData = PageHelper.startPage(page, size);
+        List<Section> sections = sectionMapper.selectMany(selectStatementProvider);
+        List<SectionNewsVo> sectionNewsVos = new ArrayList<>();
+        BeanCopier sectionCopier = BeanCopier.create(Section.class, SectionNewsVo.class, false);
+        for (Section section : sections) {
+            SectionNewsVo sectionNewsVo = sectionMapper.selectData(section.getSectionId());
+            if (sectionNewsVo.getViewsSum() == null)sectionNewsVo.setViewsSum(0);
+            if (sectionNewsVo.getLikeSum() == null)sectionNewsVo.setLikeSum(0);
+            sectionCopier.copy(section,sectionNewsVo,null);
+            sectionNewsVos.add(sectionNewsVo);
+        }
+        PageInfo<SectionNewsVo> pageInfo = new PageInfo<>();
+        pageInfo.setPage(page);
+        pageInfo.setTotalSize(queryPageData.getTotal());
+        pageInfo.setPageData(sectionNewsVos);
+        return pageInfo;
     }
 }

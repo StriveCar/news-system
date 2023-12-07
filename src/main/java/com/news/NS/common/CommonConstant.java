@@ -3,9 +3,14 @@ package com.news.NS.common;
 public interface CommonConstant {
 
     Byte USER_ROLE = 1;//普通用户
-    Byte Editor_ROLE = 2;//新闻编辑
+    Byte PULISHER_ROLE = 2;//新闻编辑
     Byte ADMIN_ROLE= 3;//管理员
     Byte SUPER_ADMIN_ROLE = 4;//超级管理员
+
+    String USER = "1";//鉴权的角色
+    String PULISHER = "2";
+    String ADMIN = "3";
+    String SUPER_ADMIN = "4";
 
     Byte NEWS_NOTISSUE = 1;//新闻未发布状态
     Byte NEWS_ISSUE = 2;//新闻发布状态

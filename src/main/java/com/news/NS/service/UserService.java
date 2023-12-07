@@ -62,8 +62,6 @@ public class UserService {
             StpUtil.login(user.getUserId());
             String token = StpUtil.getTokenValueByLoginId(StpUtil.getLoginId());
             StpUtil.getSessionByLoginId(StpUtil.getLoginId()).set("userId", user.getUserId());
-//            StpUtil.getRoleList();
-            System.out.println(StpUtil.getRoleList());
             map.put("user", user);
             map.put("token", token);
         }

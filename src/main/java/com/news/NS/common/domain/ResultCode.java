@@ -32,6 +32,7 @@ public enum ResultCode {
 
     SECTION_EXIST(2009,"该栏目已存在",false),
     SECTION_NOT_EXIST(2009,"该栏目不存在",false),
+    SECTION_LIST_NOT_EXIST(2009,"该栏目不存在",false),
 
     OPERATE_OBJECT_NOT_SELF(2012, "操作的对象不能是自己", false),
 
