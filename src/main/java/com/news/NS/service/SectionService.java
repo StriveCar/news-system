@@ -102,7 +102,7 @@ public class SectionService {
         List<SectionNewsVo> sectionNewsVos = new ArrayList<>();
         BeanCopier sectionCopier = BeanCopier.create(Section.class, SectionNewsVo.class, false);
         for (Section section : sections) {
-            SectionNewsVo sectionNewsVo = sectionMapper.selectData(section.getSectionId());
+            SectionNewsVo sectionNewsVo = newsMapper.selectSectionData(section.getSectionId());
             if (sectionNewsVo.getViewsSum() == null)sectionNewsVo.setViewsSum(0);
             if (sectionNewsVo.getLikeSum() == null)sectionNewsVo.setLikeSum(0);
             sectionCopier.copy(section,sectionNewsVo,null);

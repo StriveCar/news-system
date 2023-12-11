@@ -2,6 +2,7 @@ package com.news.NS.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
+import cn.dev33.satoken.stp.StpUtil;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.domain.User;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @RestController
@@ -34,10 +36,28 @@ public class UserController {
         return userService.login(userLoginDTO);
     }
 
+    @PostMapping("/user/register")
+    @ApiOperation(value = "用户注册")
+    public Map<String, Object> registerApi(@RequestBody UserRegisterDTO userRegisterDTO) {
+        return userService.register(userRegisterDTO);
+    }
+
+    @GetMapping("/user/logout")
+    @ApiOperation(value = "用户退出登录")
+    public void logoutApi() {
+        StpUtil.logout();
+    }
+
     @PostMapping("/user/update/userInfo")
     @ApiOperation(value = "修改用户信息")
     public void updateUserInfoApi(@Valid @RequestBody UserUpdateDTO userUpdateDTO) {
         userService.updateUserInfo(userUpdateDTO);
+    }
+
+    @GetMapping("/user/get/userInfo")
+    @ApiOperation(value = "根据Id获取用户信息")
+    public User getUserInfoApi(@NotNull @RequestParam("id") Integer userId) {
+        return userService.getUserinfo(userId);
     }
 
     @GetMapping("/user/get/verifyCode")
@@ -47,9 +67,15 @@ public class UserController {
     }
 
     @PostMapping("/user/modify/password")
-    @ApiOperation(value = "修改用户密码")
+    @ApiOperation(value = "修改密码")
     public void updateUserPasswordApi(@Valid @RequestBody UserUpdatePwdDTO userUpdateDTO) {
         userService.updateUserPassword(userUpdateDTO);
+    }
+
+    @PostMapping("/admin/login")
+    @ApiOperation(value = "管理员登录")
+    public Map<String, Object> adminLoginApi(@RequestBody UserLoginDTO userLoginDTO) {
+        return userService.adminLogin(userLoginDTO);
     }
 
     @PostMapping("/admin/query/userList")

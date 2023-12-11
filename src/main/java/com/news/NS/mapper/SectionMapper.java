@@ -162,6 +162,4 @@ public interface SectionMapper {
         );
     }
 
-    @Select("select count(news_id) as newsNum, sum(news_views) as viewsSum,sum(like_number) as likeSum from news where section_id = #{sectionId}")
-    SectionNewsVo selectData(@Param("sectionId") Integer sectionId);
 }

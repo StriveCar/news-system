@@ -39,7 +39,7 @@ public class SectionController {
     }
 
     @GetMapping("/section/get/data")
-    @ApiOperation(value = "栏目列表")
+    @ApiOperation(value = "栏目数据列表")
     @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<SectionNewsVo> querySectionDataApi(@Min(1)
                                                  @RequestParam("page") Integer page,

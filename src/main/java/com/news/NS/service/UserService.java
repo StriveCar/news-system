@@ -5,18 +5,19 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.news.NS.common.AlertException;
+import com.news.NS.common.CommonConstant;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.User;
-import com.news.NS.domain.dto.UserListQueryDTO;
-import com.news.NS.domain.dto.UserLoginDTO;
-import com.news.NS.domain.dto.UserUpdateDTO;
-import com.news.NS.domain.dto.UserUpdatePwdDTO;
+import com.news.NS.domain.dto.*;
 import com.news.NS.mapper.UserDynamicSqlSupport;
 import com.news.NS.mapper.UserMapper;
 import com.news.NS.util.CommonUtils;
 import com.news.NS.util.RedisCacheUtil;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.SelectDSL;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,8 @@ public class UserService {
                 .from(UserDynamicSqlSupport.user)
                 .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAcu()))
                 .and(UserDynamicSqlSupport.password, isEqualTo(pwd))
-                .build().render(RenderingStrategies.MYBATIS3);
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
         Optional<User> userOptional = userMapper.selectOne(queryStatement);
         User user;
         Map<String, Object> map = null;
@@ -68,24 +70,132 @@ public class UserService {
         return map;
     }
 
+    public Map<String, Object> register(UserRegisterDTO userRegisterDTO) {
+        SelectStatementProvider statement = select(count())
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.account, isEqualTo(userRegisterDTO.getAct()))
+                .build().render(RenderingStrategies.MYBATIS3);
+        SelectStatementProvider telStatement = select(count())
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.phoneNumber, isEqualTo(userRegisterDTO.getTel()))
+                .build().render(RenderingStrategies.MYBATIS3);
+        if (userMapper.count(statement) > 0) {
+            throw new AlertException(1000, "账号" + userRegisterDTO.getAct() + "已被注册");
+        }
+        if (userMapper.count(telStatement) > 0) {
+            throw new AlertException(1000, "手机号" + userRegisterDTO.getTel() + "已被注册");
+        }
+
+        String code = redisCacheUtil.getCacheObject(userRegisterDTO.getTel());
+        if (!StringUtils.hasLength(code)) {
+            throw new AlertException(1000, "请重新获取验证码");
+        }
+        if (!code.equals(userRegisterDTO.getCode())) {
+            throw new AlertException(1000, "验证码错误");
+        }
+        User user = new User();
+        user.setPhoneNumber(userRegisterDTO.getTel());
+        user.setUsername(userRegisterDTO.getName());
+        user.setAccount(userRegisterDTO.getAct());
+        user.setPassword(SaSecureUtil.md5(userRegisterDTO.getPwd()));
+        userMapper.insertSelective(user);
+        // 返回信息
+        Map<String, Object> map = new HashMap<>();
+        SelectStatementProvider userIdStatement = select(UserMapper.selectList)
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.phoneNumber, isEqualTo(userRegisterDTO.getTel()))
+                .and(UserDynamicSqlSupport.account,isEqualTo(userRegisterDTO.getAct()))
+                .build().render(RenderingStrategies.MYBATIS3);
+        // 用户登录
+        user.setUserId(userMapper.selectOne(userIdStatement).get().getUserId());
+        StpUtil.login(user.getUserId());
+        // 获取登录token
+        String token = StpUtil.getTokenValueByLoginId(StpUtil.getLoginId());
+        // 后台存储用户信息
+        StpUtil.getSessionByLoginId(StpUtil.getLoginId()).set("userId", user.getUserId());
+        // 返回结果
+        map.put("user", user);
+        map.put("token", token);
+        return map;
+    }
+
+    public Map<String, Object> adminLogin(UserLoginDTO userLoginDTO) {
+        String pwd = SaSecureUtil.md5(userLoginDTO.getPwd());
+        SelectStatementProvider queryStatement = select(UserMapper.selectList)
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAcu()))
+                .and(UserDynamicSqlSupport.password, isEqualTo(pwd))
+                .build().render(RenderingStrategies.MYBATIS3);
+        Optional<User> userOptional = userMapper.selectOne(queryStatement);
+        User user;
+        Map<String, Object> map;
+        if (userOptional.isPresent()) {
+            user = userOptional.get();
+            map = new HashMap<>();
+            // 用户登录
+            StpUtil.login(user.getUserId());
+            // 获取登录token
+            String token = StpUtil.getTokenValueByLoginId(StpUtil.getLoginId());
+            // 后台存储用户信息
+            StpUtil.getSessionByLoginId(StpUtil.getLoginId()).set("userId", user.getUserId());
+            // 返回结果
+            user.setPassword(null);
+            map.put("user", user);
+            map.put("token", token);
+            Byte identification = user.getIdentification();
+            if (!identification.equals(CommonConstant.ADMIN_ROLE)
+                    && !identification.equals(CommonConstant.SUPER_ADMIN_ROLE)) {
+                // 权限不足，踢出下线，抛出错误
+                StpUtil.logout();
+                throw new AlertException(1000, "您不是管理员，没有权限登录后台管理");
+            }
+        } else {
+            throw new AlertException(1000, "账号或者密码错误");
+        }
+        return map;
+    }
+
     public PageInfo<User> queryUserList(UserListQueryDTO userListQueryDTO) {
         Integer page = userListQueryDTO.getPage();
         Integer size = userListQueryDTO.getSize();
         String name = userListQueryDTO.getName();
         Byte identification = userListQueryDTO.getIdentification();
         name = StringUtils.hasLength(name) ? name + "%" : null;
-        SelectStatementProvider queryStatement = select(UserMapper.selectList)
+        System.out.println(name);
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder queryStatementBuilder = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
-                .where(UserDynamicSqlSupport.username, isLikeWhenPresent(name))
+                .where(UserDynamicSqlSupport.username, isLikeWhenPresent(name));
+
+        if (identification != null) {
+            queryStatementBuilder.and(UserDynamicSqlSupport.identification, isEqualTo(identification));
+        }
+        SelectStatementProvider queryStatement = queryStatementBuilder
                 .orderBy(UserDynamicSqlSupport.createTime.descending())
                 .build().render(RenderingStrategies.MYBATIS3);
+
         Page<User> queryDataPage = PageHelper.startPage(page, size);
+        List<User> userList = userMapper.selectMany(queryStatement);
+        userList.forEach(user -> user.setPassword(null));
         PageInfo<User> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
-        pageInfo.setPageData(userMapper.selectMany(queryStatement));
+        pageInfo.setPageData(userList);
         pageInfo.setTotalSize(queryDataPage.getTotal());
-        System.out.println(userMapper.selectMany(queryStatement));
         return pageInfo;
+    }
+
+    public User getUserinfo(Integer userId) {
+        SelectStatementProvider statementProvider = select(UserMapper.selectList)
+                .from(UserDynamicSqlSupport.user)
+                .where(UserDynamicSqlSupport.userId, isEqualTo(userId))
+                .build().render(RenderingStrategies.MYBATIS3);
+        Optional<User> users = userMapper.selectOne(statementProvider);
+        if (users.isPresent()) {
+            User user = users.get();
+            user.setPassword(null);
+            return user;
+        } else {
+            throw new AlertException(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
@@ -154,7 +264,8 @@ public class UserService {
             if (!Objects.equals(user.getIdentification(), identification)) {
                 user.setIdentification(identification);
                 UpdateStatementProvider update = update(UserDynamicSqlSupport.user)
-                        .set(UserDynamicSqlSupport.identification).equalTo(user.getIdentification())
+                        .set(UserDynamicSqlSupport.identification)
+                        .equalTo(user.getIdentification())
                         .where(UserDynamicSqlSupport.userId, isEqualTo(userId))
                         .build().render(RenderingStrategies.MYBATIS3);
                 userMapper.update(update);
