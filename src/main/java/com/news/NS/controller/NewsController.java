@@ -45,7 +45,7 @@ public class NewsController {
     }
 
     @PostMapping("/news/delete/{ids}")
-    @ApiOperation(value = "删除")
+    @ApiOperation(value = "删除新闻")
     @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public boolean deleteNews(@PathVariable("ids") String ids){
         return newsService.delete(ids);
