@@ -79,7 +79,7 @@ public class CommentController {
 
 
     @PostMapping("/second/like/{commentId}")
-    @ApiOperation(value = "一级评论点赞")
+    @ApiOperation(value = "二级评论点赞")
     public void likeSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
         commentService.likeSecondComment(commentId);
     }
