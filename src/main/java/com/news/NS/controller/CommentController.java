@@ -32,6 +32,8 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+
+
     @PostMapping("/first")
     @ApiOperation(value = "返回一级评论列表")
     public PageInfo<FirstComment> firstCommentsApi(@RequestBody @Valid FirstCommentListQueryDTO dto) {
@@ -50,6 +52,13 @@ public class CommentController {
         commentService.deleteFirstComment(commentId);
     }
 
+
+    @PostMapping("/first/like/{commentId}")
+    @ApiOperation(value = "一级评论点赞")
+    public void likeFirstCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
+        commentService.likeFirstComment(commentId);
+    }
+
     @PostMapping("/second")
     @ApiOperation(value = "返回二级评论列表")
     public PageInfo<SecondComment> secondCommentsApi(@RequestBody @Valid SecondCommentListQueryDTO dto) {
@@ -66,5 +75,12 @@ public class CommentController {
     @ApiOperation(value = "删除二级评论")
     public void deleteSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
         commentService.deleteSecondComment(commentId);
+    }
+
+
+    @PostMapping("/second/like/{commentId}")
+    @ApiOperation(value = "一级评论点赞")
+    public void likeSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
+        commentService.likeSecondComment(commentId);
     }
 }

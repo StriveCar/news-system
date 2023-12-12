@@ -13,7 +13,6 @@ import com.news.NS.domain.dto.FirstCommentUpdateDTO;
 import com.news.NS.domain.dto.SecondCommentListQueryDTO;
 import com.news.NS.domain.dto.SecondCommentUpdateDTO;
 import com.news.NS.mapper.*;
-import lombok.extern.slf4j.Slf4j;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -22,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.select;
@@ -138,6 +138,23 @@ public class CommentService {
         secondCommentMapper.delete(c -> c.where(SecondCommentDynamicSqlSupport.parentCommentId, isEqualTo(commentId)));
     }
 
+
+    /**
+     * 点赞一级评论，评论数+1
+     * */
+    public void likeFirstComment(Integer commentId) {
+        Optional<FirstComment> comment = firstCommentMapper.selectOne(c -> c.where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
+        if (comment.isPresent()) {
+            // 点赞数量 + 1
+            int likeNumber = comment.get().getLikeNumber() + 1;
+            firstCommentMapper.update(c ->
+                    c.set(FirstCommentDynamicSqlSupport.likeNumber).equalTo(likeNumber).where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId))
+            );
+        } else {
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该评论不存在");
+        }
+    }
+
     /**
      * 查询二级评论列表
      */
@@ -213,6 +230,22 @@ public class CommentService {
      */
     public void deleteSecondComment(Integer commentId) {
         if (secondCommentMapper.delete(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId))) == 0) {
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该评论不存在");
+        }
+    }
+
+
+    /**
+     * 点赞一级评论，评论数+1
+     * */
+    public void likeSecondComment(Integer commentId) {
+        Optional<SecondComment> comment = secondCommentMapper.selectOne(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
+        if (comment.isPresent()) {
+            int likeNumber = comment.get().getLikeNumber() + 1;
+            secondCommentMapper.update(c ->
+                    c.set(SecondCommentDynamicSqlSupport.likeNumber).equalTo(likeNumber).where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId))
+            );
+        } else {
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该评论不存在");
         }
     }
