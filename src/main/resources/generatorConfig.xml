@@ -44,9 +44,9 @@
 <!--        <table tableName="news_collection" domainObjectName="Collect"/>-->
 <!--&lt;!&ndash;        <table tableName="user_focus" domainObjectName="Focus"/>&ndash;&gt;-->
 <!--        <table tableName="news_review" domainObjectName="NewsReview"/>-->
-<!--        <table tableName="section" domainObjectName="Section"/>-->
-        <table tableName="second_level_comment" domainObjectName="SecondComment"/>
-        <table tableName="first_level_comment" domainObjectName="FirstComment"/>
+        <table tableName="section" domainObjectName="Section"/>
+<!--        <table tableName="second_level_comment" domainObjectName="SecondComment"/>-->
+<!--        <table tableName="first_level_comment" domainObjectName="FirstComment"/>-->
 <!--        <table tableName="news" domainObjectName="News"/>-->
 <!--        <table tableName="user_info" domainObjectName="User"/>-->
     </context>
