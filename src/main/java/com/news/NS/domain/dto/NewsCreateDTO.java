@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 @ToString
 public class NewsCreateDTO {
     @NotNull
+    private Integer publisherId;
+    @NotNull
     private Integer sectionId;
     private String title;
     private String content;
