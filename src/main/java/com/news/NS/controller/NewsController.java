@@ -48,9 +48,10 @@ public class NewsController {
 
     @PostMapping("/news/modify")
     @ApiOperation(value = "修改新闻")
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
     public void modifyNews(@RequestBody News news){
         /*
-         * 用于保存草稿
+         * 用于保存草稿内容
          * news：修改后的新闻对象
          */
         newsService.modifyNews(news);
