@@ -6,7 +6,7 @@ import lombok.ToString;
 @Data
 @ToString
 public class UserLoginDTO {
-    private String acu;
+    private String act;
     private String pwd;
 
 }

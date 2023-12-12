@@ -38,8 +38,8 @@ public class NewsService {
     }
 
     public boolean publish(int newsId) {
-        UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
-        newsMapper.update()
+//        UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
+//        newsMapper.update()
         return true;
     }
 
