@@ -34,164 +34,164 @@ import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
 @Mapper
 public interface FirstCommentMapper {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
-    BasicColumn[] selectList = BasicColumn.columnList(commentId, newsId, publisherId, ikeNumber, content, publishTime);
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
+    BasicColumn[] selectList = BasicColumn.columnList(commentId, newsId, publisherId, likeNumber, content, publishTime);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.527+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1055317+08:00", comments="Source Table: first_level_comment")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     long count(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.527+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1055317+08:00", comments="Source Table: first_level_comment")
     @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
     int delete(DeleteStatementProvider deleteStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1055317+08:00", comments="Source Table: first_level_comment")
     @InsertProvider(type=SqlProviderAdapter.class, method="insert")
     int insert(InsertStatementProvider<FirstComment> insertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1055317+08:00", comments="Source Table: first_level_comment")
     @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
     int insertMultiple(MultiRowInsertStatementProvider<FirstComment> multipleInsertStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1055317+08:00", comments="Source Table: first_level_comment")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @ResultMap("FirstCommentResult")
     Optional<FirstComment> selectOne(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     @SelectProvider(type=SqlProviderAdapter.class, method="select")
     @Results(id="FirstCommentResult", value = {
         @Result(column="comment_id", property="commentId", jdbcType=JdbcType.INTEGER, id=true),
         @Result(column="news_id", property="newsId", jdbcType=JdbcType.INTEGER),
         @Result(column="publisher_id", property="publisherId", jdbcType=JdbcType.INTEGER),
-        @Result(column="ike_number", property="ikeNumber", jdbcType=JdbcType.INTEGER),
+        @Result(column="like_number", property="likeNumber", jdbcType=JdbcType.INTEGER),
         @Result(column="content", property="content", jdbcType=JdbcType.VARCHAR),
         @Result(column="publish_time", property="publishTime", jdbcType=JdbcType.TIMESTAMP)
     })
     List<FirstComment> selectMany(SelectStatementProvider selectStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     @UpdateProvider(type=SqlProviderAdapter.class, method="update")
     int update(UpdateStatementProvider updateStatement);
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default long count(CountDSLCompleter completer) {
         return MyBatis3Utils.countFrom(this::count, firstComment, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default int delete(DeleteDSLCompleter completer) {
         return MyBatis3Utils.deleteFrom(this::delete, firstComment, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default int deleteByPrimaryKey(Integer commentId_) {
         return delete(c -> 
             c.where(commentId, isEqualTo(commentId_))
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default int insert(FirstComment record) {
         return MyBatis3Utils.insert(this::insert, record, firstComment, c ->
             c.map(commentId).toProperty("commentId")
             .map(newsId).toProperty("newsId")
             .map(publisherId).toProperty("publisherId")
-            .map(ikeNumber).toProperty("ikeNumber")
+            .map(likeNumber).toProperty("likeNumber")
             .map(content).toProperty("content")
             .map(publishTime).toProperty("publishTime")
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default int insertMultiple(Collection<FirstComment> records) {
         return MyBatis3Utils.insertMultiple(this::insertMultiple, records, firstComment, c ->
             c.map(commentId).toProperty("commentId")
             .map(newsId).toProperty("newsId")
             .map(publisherId).toProperty("publisherId")
-            .map(ikeNumber).toProperty("ikeNumber")
+            .map(likeNumber).toProperty("likeNumber")
             .map(content).toProperty("content")
             .map(publishTime).toProperty("publishTime")
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default int insertSelective(FirstComment record) {
         return MyBatis3Utils.insert(this::insert, record, firstComment, c ->
             c.map(commentId).toPropertyWhenPresent("commentId", record::getCommentId)
             .map(newsId).toPropertyWhenPresent("newsId", record::getNewsId)
             .map(publisherId).toPropertyWhenPresent("publisherId", record::getPublisherId)
-            .map(ikeNumber).toPropertyWhenPresent("ikeNumber", record::getIkeNumber)
+            .map(likeNumber).toPropertyWhenPresent("likeNumber", record::getLikeNumber)
             .map(content).toPropertyWhenPresent("content", record::getContent)
             .map(publishTime).toPropertyWhenPresent("publishTime", record::getPublishTime)
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default Optional<FirstComment> selectOne(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectOne(this::selectOne, selectList, firstComment, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default List<FirstComment> select(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectList(this::selectMany, selectList, firstComment, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default List<FirstComment> selectDistinct(SelectDSLCompleter completer) {
         return MyBatis3Utils.selectDistinct(this::selectMany, selectList, firstComment, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1065295+08:00", comments="Source Table: first_level_comment")
     default Optional<FirstComment> selectByPrimaryKey(Integer commentId_) {
         return selectOne(c ->
             c.where(commentId, isEqualTo(commentId_))
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1075258+08:00", comments="Source Table: first_level_comment")
     default int update(UpdateDSLCompleter completer) {
         return MyBatis3Utils.update(this::update, firstComment, completer);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1075258+08:00", comments="Source Table: first_level_comment")
     static UpdateDSL<UpdateModel> updateAllColumns(FirstComment record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(commentId).equalTo(record::getCommentId)
                 .set(newsId).equalTo(record::getNewsId)
                 .set(publisherId).equalTo(record::getPublisherId)
-                .set(ikeNumber).equalTo(record::getIkeNumber)
+                .set(likeNumber).equalTo(record::getLikeNumber)
                 .set(content).equalTo(record::getContent)
                 .set(publishTime).equalTo(record::getPublishTime);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1075258+08:00", comments="Source Table: first_level_comment")
     static UpdateDSL<UpdateModel> updateSelectiveColumns(FirstComment record, UpdateDSL<UpdateModel> dsl) {
         return dsl.set(commentId).equalToWhenPresent(record::getCommentId)
                 .set(newsId).equalToWhenPresent(record::getNewsId)
                 .set(publisherId).equalToWhenPresent(record::getPublisherId)
-                .set(ikeNumber).equalToWhenPresent(record::getIkeNumber)
+                .set(likeNumber).equalToWhenPresent(record::getLikeNumber)
                 .set(content).equalToWhenPresent(record::getContent)
                 .set(publishTime).equalToWhenPresent(record::getPublishTime);
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1075258+08:00", comments="Source Table: first_level_comment")
     default int updateByPrimaryKey(FirstComment record) {
         return update(c ->
             c.set(newsId).equalTo(record::getNewsId)
             .set(publisherId).equalTo(record::getPublisherId)
-            .set(ikeNumber).equalTo(record::getIkeNumber)
+            .set(likeNumber).equalTo(record::getLikeNumber)
             .set(content).equalTo(record::getContent)
             .set(publishTime).equalTo(record::getPublishTime)
             .where(commentId, isEqualTo(record::getCommentId))
         );
     }
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.528+08:00", comments="Source Table: first_level_comment")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T11:49:08.1075258+08:00", comments="Source Table: first_level_comment")
     default int updateByPrimaryKeySelective(FirstComment record) {
         return update(c ->
             c.set(newsId).equalToWhenPresent(record::getNewsId)
             .set(publisherId).equalToWhenPresent(record::getPublisherId)
-            .set(ikeNumber).equalToWhenPresent(record::getIkeNumber)
+            .set(likeNumber).equalToWhenPresent(record::getLikeNumber)
             .set(content).equalToWhenPresent(record::getContent)
             .set(publishTime).equalToWhenPresent(record::getPublishTime)
             .where(commentId, isEqualTo(record::getCommentId))
