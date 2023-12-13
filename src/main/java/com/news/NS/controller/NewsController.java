@@ -66,13 +66,13 @@ public class NewsController {
         newsService.delete(ids);
     }
 
-    @GetMapping("/news")
+    @GetMapping("/news/get/byNewsId")
     @ApiOperation(value = "根据新闻id获取新闻详情")
     public Map<String,Object> getNewsById(@RequestParam("newsId") Integer id){
         return newsService.getNewsById(id);
     }
 
-    @GetMapping("/news/")
+    @GetMapping("/news/get/byPublisherId")
     @ApiOperation(value = "根据作者id获取新闻")
     public PageInfo<News> getNewsByPublisherId(@RequestParam("publisherId")int publisherId,
                                              @Min(1)
@@ -82,7 +82,7 @@ public class NewsController {
         return newsService.getNewsByPublisherId(publisherId,page,size);
     }
 
-    @GetMapping("/news")
+    @GetMapping("/news/get/bySectionId")
     @ApiOperation(value = "根据栏目id获取新闻")
     public PageInfo<News> getNewsBySectionId(@RequestParam("sectionId")int sectionId,
                                              @Min(1)
@@ -90,6 +90,16 @@ public class NewsController {
                                              @Range(min = 1, max = 100)
                                              @RequestParam("size") Integer size){
         return newsService.getNewsBySectionId(sectionId,page,size);
+    }
+
+    @GetMapping("/news/get/byPublishStatus")
+    @ApiOperation(value = "根据新闻状态获取新闻")
+    public PageInfo<News> getNewsByPublishStatus(@Min(1)@Max(4)@RequestParam("publishStatus") Byte Status,
+                                                 @Min(1)
+                                                 @RequestParam("page") Integer page,
+                                                 @Range(min = 1, max = 100)
+                                                 @RequestParam("size") Integer size){
+        return newsService.getNewsByPublishStatus(Status,page,size);
     }
 
     @GetMapping("/news/all")
@@ -109,15 +119,5 @@ public class NewsController {
                                      @Range(min = 1, max = 100)
                                      @RequestParam("size") Integer size){
         return newsService.searchNews(keyword,page,size);
-    }
-
-    @GetMapping("/news")
-    @ApiOperation(value = "根据新闻状态获取新闻")
-    public PageInfo<News> getNewsByPublishStatus(@Min(1)@Max(4)@RequestParam("publishStatus") Byte Status,
-                                @Min(1)
-                                @RequestParam("page") Integer page,
-                                @Range(min = 1, max = 100)
-                                @RequestParam("size") Integer size){
-        return newsService.getNewsByPublishStatus(Status,page,size);
     }
 }
