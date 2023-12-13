@@ -12,10 +12,12 @@ import com.news.NS.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.hibernate.validator.constraints.Range;
+import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.HashMap;
 import java.util.List;
@@ -70,9 +72,9 @@ public class NewsController {
         return newsService.getNewsById(id);
     }
 
-    @GetMapping("/news/publisherId={publisherId}")
+    @GetMapping("/news/")
     @ApiOperation(value = "根据作者id获取新闻")
-    public PageInfo<News> getNewsByPublisherId(@PathVariable("publisherId")int publisherId,
+    public PageInfo<News> getNewsByPublisherId(@RequestParam("publisherId")int publisherId,
                                              @Min(1)
                                              @RequestParam("page") Integer page,
                                              @Range(min = 1, max = 100)
@@ -80,9 +82,9 @@ public class NewsController {
         return newsService.getNewsByPublisherId(publisherId,page,size);
     }
 
-    @GetMapping("/news/sectionId={sectionId}")
+    @GetMapping("/news")
     @ApiOperation(value = "根据栏目id获取新闻")
-    public PageInfo<News> getNewsBySectionId(@PathVariable("sectionId")int sectionId,
+    public PageInfo<News> getNewsBySectionId(@RequestParam("sectionId")int sectionId,
                                              @Min(1)
                                              @RequestParam("page") Integer page,
                                              @Range(min = 1, max = 100)
@@ -107,5 +109,15 @@ public class NewsController {
                                      @Range(min = 1, max = 100)
                                      @RequestParam("size") Integer size){
         return newsService.searchNews(keyword,page,size);
+    }
+
+    @GetMapping("/news")
+    @ApiOperation(value = "根据新闻状态获取新闻")
+    public PageInfo<News> getNewsByPublishStatus(@Min(1)@Max(4)@RequestParam("publishStatus") Byte Status,
+                                @Min(1)
+                                @RequestParam("page") Integer page,
+                                @Range(min = 1, max = 100)
+                                @RequestParam("size") Integer size){
+        return newsService.getNewsByPublishStatus(Status,page,size);
     }
 }

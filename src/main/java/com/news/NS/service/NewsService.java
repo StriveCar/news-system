@@ -183,4 +183,15 @@ public class NewsService {
         return packing(newsList,page, queryPageData.getTotal());
     }
 
+    public PageInfo<News> getNewsByPublishStatus(Byte publishStatus, Integer page, Integer size) {
+        SelectStatementProvider sqlStatement = select(newsMapper.selectList)
+                .from(NewsDynamicSqlSupport.news)
+                .where(NewsDynamicSqlSupport.publishStatus,isEqualTo(publishStatus))
+                .build().render(RenderingStrategies.MYBATIS3);
+
+        Page<News> queryPageData = PageHelper.startPage(page, size);
+        List<News> news = newsMapper.selectMany(sqlStatement);
+
+        return packing(news,page,queryPageData.getTotal());
+    }
 }
