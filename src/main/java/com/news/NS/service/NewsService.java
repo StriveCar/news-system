@@ -1,6 +1,5 @@
 package com.news.NS.service;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.news.NS.common.AlertException;
@@ -8,25 +7,19 @@ import com.news.NS.common.CommonConstant;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.News;
-import com.news.NS.domain.Section;
 import com.news.NS.domain.dto.NewsCreateDTO;
 import com.news.NS.mapper.NewsDynamicSqlSupport;
 import com.news.NS.mapper.NewsMapper;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
-import static org.mybatis.dynamic.sql.util.kotlin.spring.NamedParameterJdbcTemplateExtensionsKt.delete;
 
 @Service
 public class NewsService {
@@ -42,6 +35,7 @@ public class NewsService {
         temp.setPublishStatus(CommonConstant.NEWS_NOTISSUE);
         temp.setNewsViews(0);
         temp.setLikeNumber(0);
+        newsMapper.insert(temp);
     }
 
     public void delete(String ids) {
