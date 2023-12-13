@@ -51,10 +51,9 @@ public class UserService {
         String pwd = SaSecureUtil.md5(userLoginDTO.getPwd());
         SelectStatementProvider queryStatement = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
-                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAcu()))
+                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAct()))
                 .and(UserDynamicSqlSupport.password, isEqualTo(pwd))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+                .build().render(RenderingStrategies.MYBATIS3);
         Optional<User> userOptional = userMapper.selectOne(queryStatement);
         User user;
         Map<String, Object> map = null;
@@ -123,7 +122,8 @@ public class UserService {
         String pwd = SaSecureUtil.md5(userLoginDTO.getPwd());
         SelectStatementProvider queryStatement = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
-                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAcu()))
+                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAct()))
+                .or(UserDynamicSqlSupport.phoneNumber,isEqualTo(userLoginDTO.getAct()))
                 .and(UserDynamicSqlSupport.password, isEqualTo(pwd))
                 .build().render(RenderingStrategies.MYBATIS3);
         Optional<User> userOptional = userMapper.selectOne(queryStatement);

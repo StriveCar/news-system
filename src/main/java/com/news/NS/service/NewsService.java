@@ -84,6 +84,7 @@ public class NewsService {
         }
     }
 
+
     public Map<String,Object> getNewsById(Integer id){
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
@@ -122,6 +123,7 @@ public class NewsService {
         Page<News> queryPageData = PageHelper.startPage(page, size);
         List<News> news = newsMapper.selectMany(sqlStatement);
         return packing(news,page,queryPageData.getTotal());
+
     }
 
     public PageInfo<News> getNewsByPublisherId(int publisherId, Integer page, Integer size) {

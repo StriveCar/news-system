@@ -6,16 +6,16 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 
 public final class SectionDynamicSqlSupport {
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: section")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T12:38:00.0514777+08:00", comments="Source Table: section")
     public static final Section section = new Section();
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source field: section.section_id")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T12:38:00.0514777+08:00", comments="Source field: section.section_id")
     public static final SqlColumn<Integer> sectionId = section.sectionId;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source field: section.section_name")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T12:38:00.052474+08:00", comments="Source field: section.section_name")
     public static final SqlColumn<String> sectionName = section.sectionName;
 
-    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-11-26T23:08:08.522+08:00", comments="Source Table: section")
+    @Generated(value="org.mybatis.generator.api.MyBatisGenerator", date="2023-12-12T12:38:00.0514777+08:00", comments="Source Table: section")
     public static final class Section extends SqlTable {
         public final SqlColumn<Integer> sectionId = column("section_id", JDBCType.INTEGER);
 
