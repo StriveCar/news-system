@@ -8,12 +8,14 @@ import com.news.NS.common.domain.PageInfo;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.News;
 import com.news.NS.domain.dto.NewsCreateDTO;
+import com.news.NS.domain.dto.NewsSearchParamDTO;
 import com.news.NS.mapper.NewsDynamicSqlSupport;
 import com.news.NS.mapper.NewsMapper;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -71,7 +73,14 @@ public class NewsService {
     public void publish(int newsId) {
         LocalDateTime currentTime = LocalDateTime.now();
         Timestamp timestamp = Timestamp.valueOf(currentTime);
-        //可能存在BUG：已发布新闻还能发布。在前端解决
+        Optional<News> optional = newsMapper.selectByPrimaryKey(newsId);
+        if(!optional.isPresent()){
+            throw new AlertException(500,"id为"+newsId+"的新闻不存在");
+        } else {
+            if(optional.get().getPublishStatus() != CommonConstant.NEWS_NOTISSUE) {
+                throw new AlertException(ResultCode.ILLEGAL_OPERATION);
+            }
+        }
         UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
                 .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.NEWS_ISSUE)
                 .set(NewsDynamicSqlSupport.publishTime).equalTo(timestamp)
@@ -83,7 +92,6 @@ public class NewsService {
             throw new AlertException(ResultCode.UPDATE_ERROR);
         }
     }
-
 
     public Map<String,Object> getNewsById(Integer id){
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
@@ -114,31 +122,29 @@ public class NewsService {
         newsMapper.update(updateStatement);
     }
 
-    public PageInfo<News> getNewsBySectionId(Integer sectionId,Integer page,Integer size){
+    public PageInfo<News> getNewsBySectionId(NewsSearchParamDTO<Integer> dto){
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.sectionId,isEqualTo(sectionId))
+                .where(NewsDynamicSqlSupport.sectionId,isEqualTo(dto.getParam()))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(page, size);
+        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<News> news = newsMapper.selectMany(sqlStatement);
-        return packing(news,page,queryPageData.getTotal());
-
+        return packing(news,dto.getPage(),queryPageData.getTotal());
     }
 
-    public PageInfo<News> getNewsByPublisherId(int publisherId, Integer page, Integer size) {
+    public PageInfo<News> getNewsByPublisherId(NewsSearchParamDTO<Integer> dto) {
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.publisherId,isEqualTo(publisherId))
+                .where(NewsDynamicSqlSupport.publisherId,isEqualTo(dto.getParam()))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(page, size);
+        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<News> news = newsMapper.selectMany(sqlStatement);
-        return packing(news,page,queryPageData.getTotal());
+        return packing(news,dto.getPage(),queryPageData.getTotal());
     }
 
     public PageInfo<News> getAllNews(Integer page, Integer size) {
-        //删除状态下的新闻查不出
         SelectStatementProvider queryStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
                 .where(NewsDynamicSqlSupport.publishStatus,isNotEqualTo(CommonConstant.NEWS_DISABLE))
@@ -163,8 +169,8 @@ public class NewsService {
         return pageInfo;
     }
 
-    public PageInfo<News> searchNews(String keyWord,Integer page, Integer size) {
-        String likeKeyword = "%" + keyWord + "%";
+    public PageInfo<News> searchNews(NewsSearchParamDTO<String> dto) {
+        String likeKeyword = "%" + dto.getParam() + "%";
 
         SelectStatementProvider selectStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
@@ -173,21 +179,24 @@ public class NewsService {
                 .and(NewsDynamicSqlSupport.publishStatus,isNotEqualTo(CommonConstant.NEWS_DISABLE))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(page, size);
+        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<News> newsList = newsMapper.selectMany(selectStatement);
 
-        return packing(newsList,page, queryPageData.getTotal());
+        return packing(newsList,dto.getPage(), queryPageData.getTotal());
     }
 
-    public PageInfo<News> getNewsByPublishStatus(Byte publishStatus, Integer page, Integer size) {
+    public PageInfo<News> getNewsByPublishStatus(NewsSearchParamDTO<Byte> dto) {
+        if(dto.getParam() < 1 || dto.getParam() > 4){
+            throw new AlertException(406,"非法参数："+dto.getParam());
+        }
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.publishStatus,isEqualTo(publishStatus))
+                .where(NewsDynamicSqlSupport.publishStatus,isEqualTo(dto.getParam()))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(page, size);
+        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<News> news = newsMapper.selectMany(sqlStatement);
 
-        return packing(news,page,queryPageData.getTotal());
+        return packing(news,dto.getPage(),queryPageData.getTotal());
     }
 }
