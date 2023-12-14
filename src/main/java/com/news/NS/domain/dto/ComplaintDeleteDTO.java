@@ -3,11 +3,9 @@ package com.news.NS.domain.dto;
 import lombok.Data;
 import lombok.ToString;
 
-import java.sql.Timestamp;
-
 @Data
 @ToString
-public class ComplaintCreateDTO {
+public class ComplaintDeleteDTO {
     private Integer newsId;
-    private String reason;
+    private Integer complaintId;
 }
