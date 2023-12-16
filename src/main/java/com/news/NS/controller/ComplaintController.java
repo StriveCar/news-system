@@ -46,6 +46,7 @@ public class ComplaintController {
     }
 
     @GetMapping("/complaint/search")
+    @ApiOperation(value = "查询举报")
     public PageInfo<Complaint> searchComplaint(@RequestBody ComplaintSearchDTO<String> dto){
         return complaintService.searchComplaint(dto);
     }
