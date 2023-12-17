@@ -2,6 +2,7 @@ package com.news.NS.service;
 
 import com.news.NS.common.CommonConstant;
 import com.news.NS.domain.vo.PulisherDataVo;
+import com.news.NS.domain.vo.SectionNewsVo;
 import com.news.NS.mapper.*;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -32,6 +34,9 @@ public class DataStatisticsService {
 
     @Autowired
     private SecondCommentMapper secondCommentMapper;
+
+    @Autowired
+    private SectionService sectionService;
 
     public Map<String, Object> getSystemCount(){
         SelectStatementProvider userCount = select(count())
@@ -60,9 +65,54 @@ public class DataStatisticsService {
         return map;
     }
 
-    public List<PulisherDataVo> getPulisherTop(){
-        return userMapper.pulisherData();
+    public Map<String, Object> getPulisherTop(){
+        List<PulisherDataVo> pulisherDataVos = userMapper.pulisherData();;
+        List<String> names = pulisherDataVos.stream()
+                .map(PulisherDataVo::getUsername)
+                .collect(Collectors.toList());
+        List<Integer> viewsSum = pulisherDataVos.stream()
+                .map(PulisherDataVo::getViewsSum)
+                .collect(Collectors.toList());
+        List<Integer> likeSum = pulisherDataVos.stream()
+                .map(PulisherDataVo::getLikeSum)
+                .collect(Collectors.toList());
+        List<Integer> newsCount = pulisherDataVos.stream()
+                .map(PulisherDataVo::getNewsCount)
+                .collect(Collectors.toList());
+        Map<String, Object> map = new HashMap<>();
+        map.put("name",names);
+        map.put("viewsSum",viewsSum);
+        map.put("likeSum",likeSum);
+        map.put("newsCount",newsCount);
+        return map;
     }
 
-//    public Map<String, Object> get
+    public Map<String, Object> getRolesCount(){
+        List<Integer> count = userMapper.selectRoleCount();
+        Map<String, Object> map = new HashMap<>();
+        map.put("roleCount",count);
+        return map;
+    }
+
+    public Map<String, Object> getSectionData(){
+        List<SectionNewsVo> sectionNewsVos= sectionService.querySectionDataList(1,10).getPageData();
+        List<String> names = sectionNewsVos.stream()
+                .map(SectionNewsVo::getSectionName)
+                .collect(Collectors.toList());
+        List<Integer> viewsSum = sectionNewsVos.stream()
+                .map(SectionNewsVo::getViewsSum)
+                .collect(Collectors.toList());
+        List<Integer> likeSum = sectionNewsVos.stream()
+                .map(SectionNewsVo::getLikeSum)
+                .collect(Collectors.toList());
+        List<Integer> newsCount = sectionNewsVos.stream()
+                .map(SectionNewsVo::getNewsNum)
+                .collect(Collectors.toList());
+        Map<String, Object> map = new HashMap<>();
+        map.put("name",names);
+        map.put("viewsSum",viewsSum);
+        map.put("likeSum",likeSum);
+        map.put("newsCount",newsCount);
+        return map;
+    }
 }

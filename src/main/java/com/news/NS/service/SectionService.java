@@ -40,11 +40,7 @@ public class SectionService {
     private NewsMapper newsMapper;
 
     public Section addSection(String sectionName) {
-        SelectStatementProvider selectStatementProvider = select(count())
-                .from(SectionDynamicSqlSupport.section)
-                .where(SectionDynamicSqlSupport.sectionName, isEqualTo(sectionName))
-                .build().render(RenderingStrategies.MYBATIS3);
-        if (sectionMapper.count(selectStatementProvider) != 0) {
+        if (sectionMapper.count(c -> c.where(SectionDynamicSqlSupport.sectionName, isEqualTo(sectionName))) != 0) {
             throw new AlertException(ResultCode.SECTION_EXIST);
         }
         Section section = new Section();
@@ -54,6 +50,9 @@ public class SectionService {
             throw new AlertException(ResultCode.SYSTEM_ERROR);
         }
 
+        section.setSectionId(sectionMapper.selectOne(c ->
+                        c.where(SectionDynamicSqlSupport.sectionName, isEqualTo(sectionName)))
+                .get().getSectionId());
         return section;
     }
 

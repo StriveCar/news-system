@@ -42,7 +42,21 @@ public class DataStatisticsController {
     @GetMapping("/admin/get/pulisher/top")
     @ApiOperation(value = "获取热门编辑榜单信息")
     @SaCheckRole(value = {CommonConstant.ADMIN, CommonConstant.SUPER_ADMIN}, mode = SaMode.OR)
-    public List<PulisherDataVo> getPulisherTop() {
+    public Map<String, Object> getPulisherTop() {
         return dataStatisticsService.getPulisherTop();
+    }
+
+    @GetMapping("/admin/get/role/count")
+    @ApiOperation(value = "获取角色分类信息")
+    @SaCheckRole(value = {CommonConstant.ADMIN, CommonConstant.SUPER_ADMIN}, mode = SaMode.OR)
+    public Map<String, Object> getRoleData() {
+        return dataStatisticsService.getRolesCount();
+    }
+
+    @GetMapping("/admin/get/section/count")
+    @ApiOperation(value = "获取栏目统计信息")
+    @SaCheckRole(value = {CommonConstant.ADMIN, CommonConstant.SUPER_ADMIN}, mode = SaMode.OR)
+    public Map<String, Object> getSectionData() {
+        return dataStatisticsService.getSectionData();
     }
 }

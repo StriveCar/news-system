@@ -10,7 +10,7 @@ import com.news.NS.domain.FirstComment;
 import com.news.NS.domain.News;
 import com.news.NS.domain.SecondComment;
 import com.news.NS.domain.User;
-import com.news.NS.domain.dto.*;
+import com.news.NS.domain.dto.Comment.*;
 import com.news.NS.domain.vo.CommentAdminVo;
 import com.news.NS.domain.vo.FirstAndSecondCommentVo;
 import com.news.NS.domain.vo.FirstCommentVo;

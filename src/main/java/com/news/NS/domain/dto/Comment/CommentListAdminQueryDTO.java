@@ -1,13 +1,12 @@
-package com.news.NS.domain.dto;
+package com.news.NS.domain.dto.Comment;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 @Data
-public class CommentListQueryDTO {
+public class CommentListAdminQueryDTO {
 
     @Min(1)
     private Integer page;
@@ -15,6 +14,5 @@ public class CommentListQueryDTO {
     @Range(min = 1, max = 100)
     private Integer size;
 
-    @NotNull
     private Integer newsId;
 }
