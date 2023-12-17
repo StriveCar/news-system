@@ -27,20 +27,17 @@ public class ComplaintController {
     public ComplaintController(ComplaintService complaintService){this.complaintService = complaintService;}
     @PostMapping("/complaint/create")
     @ApiOperation(value = "添加举报")
-    @SaCheckRole(value = {CommonConstant.USER,CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
     public void addComplaint(@RequestBody ComplaintCreateDTO complaintCreateDTO){
         complaintService.addNewComplaint(complaintCreateDTO);
     }
     @GetMapping("/complaint/delete")
     @ApiOperation(value = "删除举报")
-    @SaCheckRole(value = {CommonConstant.USER,CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
     public void deleteComplaint(@RequestBody ComplaintDeleteDTO dto){
         complaintService.deleteComplaint(dto);
     }
 
     @PostMapping("/complaint/modify")
     @ApiOperation(value = "修改举报信息")
-    @SaCheckRole(value = {CommonConstant.USER,CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
     public void modifyComplaint(@RequestParam ComplaintModifyDTO dto){
         complaintService.modifyComplaint(dto);
     }

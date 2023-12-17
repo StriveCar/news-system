@@ -8,13 +8,12 @@ import com.news.NS.common.domain.PageInfo;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.Complaint;
 import com.news.NS.domain.News;
+import com.news.NS.domain.User;
 import com.news.NS.domain.dto.ComplaintCreateDTO;
 import com.news.NS.domain.dto.ComplaintDeleteDTO;
 import com.news.NS.domain.dto.ComplaintModifyDTO;
 import com.news.NS.domain.dto.ComplaintSearchDTO;
-import com.news.NS.mapper.ComplaintDynamicSqlSupport;
-import com.news.NS.mapper.ComplaintMapper;
-import com.news.NS.mapper.NewsDynamicSqlSupport;
+import com.news.NS.mapper.*;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -23,23 +22,38 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 @Service
 public class ComplaintService {
     private final ComplaintMapper complaintMapper;
-    public ComplaintService(ComplaintMapper complaintMapper){this.complaintMapper = complaintMapper;}
+    private final UserMapper userMapper;
+    private final NewsMapper newsMapper;
+    public ComplaintService(ComplaintMapper complaintMapper,
+                            NewsMapper newsMapper,
+                            UserMapper userMapper){
+        this.complaintMapper = complaintMapper;
+        this.newsMapper = newsMapper;
+        this.userMapper = userMapper;
+    }
     public void addNewComplaint(ComplaintCreateDTO complaintCreateDTO) {
         Complaint temp = new Complaint();
+        //检查用户是否存在。
+        if(!userMapper.selectByPrimaryKey(complaintCreateDTO.getComplainerId()).isPresent()){
+            throw new AlertException(ResultCode.USER_NOT_EXIST);
+        }
+        temp.setComplainerId(complaintCreateDTO.getComplainerId());
+        //检查新闻是否存在
+        if(!newsMapper.selectByPrimaryKey(complaintCreateDTO.getNewsId()).isPresent()){
+            throw new AlertException(500,"id为"+complaintCreateDTO.getNewsId()+"新闻不存在");
+        }
         temp.setNewsId(complaintCreateDTO.getNewsId());
-        LocalDateTime currentTime = LocalDateTime.now();
-        Timestamp timestamp = Timestamp.valueOf(currentTime);
-        temp.setComplaintTime(timestamp);
+        temp.setComplaintTime(Timestamp.valueOf(LocalDateTime.now()));
         temp.setComplaintReason(complaintCreateDTO.getReason());
         complaintMapper.insert(temp);
     }
-
 
     public void deleteComplaint(ComplaintDeleteDTO dto) {
         if(complaintMapper.deleteByPrimaryKey(dto.getComplaintId(),dto.getNewsId()) == 0) {
