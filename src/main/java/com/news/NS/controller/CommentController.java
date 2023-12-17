@@ -3,12 +3,11 @@ package com.news.NS.controller;
 
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
-import com.news.NS.domain.FirstComment;
-import com.news.NS.domain.SecondComment;
-import com.news.NS.domain.dto.FirstCommentListQueryDTO;
-import com.news.NS.domain.dto.FirstCommentUpdateDTO;
-import com.news.NS.domain.dto.SecondCommentListQueryDTO;
-import com.news.NS.domain.dto.SecondCommentUpdateDTO;
+import com.news.NS.domain.dto.Comment.*;
+import com.news.NS.domain.vo.CommentAdminVo;
+import com.news.NS.domain.vo.FirstAndSecondCommentVo;
+import com.news.NS.domain.vo.FirstCommentVo;
+import com.news.NS.domain.vo.SecondCommentVo;
 import com.news.NS.service.CommentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +35,7 @@ public class CommentController {
 
     @PostMapping("/first")
     @ApiOperation(value = "返回一级评论列表")
-    public PageInfo<FirstComment> firstCommentsApi(@RequestBody @Valid FirstCommentListQueryDTO dto) {
+    public PageInfo<FirstCommentVo> firstCommentsApi(@RequestBody @Valid FirstCommentListQueryDTO dto) {
         return commentService.queryFirstCommentList(dto);
     }
 
@@ -61,7 +60,7 @@ public class CommentController {
 
     @PostMapping("/second")
     @ApiOperation(value = "返回二级评论列表")
-    public PageInfo<SecondComment> secondCommentsApi(@RequestBody @Valid SecondCommentListQueryDTO dto) {
+    public PageInfo<SecondCommentVo> secondCommentsApi(@RequestBody @Valid SecondCommentListQueryDTO dto) {
         return commentService.querySecondCommentList(dto);
     }
 
@@ -82,5 +81,23 @@ public class CommentController {
     @ApiOperation(value = "二级评论点赞")
     public void likeSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
         commentService.likeSecondComment(commentId);
+    }
+
+    @PostMapping("/")
+    @ApiOperation(value = "返回一级带有二级的评论列表")
+    public PageInfo<FirstAndSecondCommentVo> firstAndSecondCommentsApi(@RequestBody @Valid CommentListQueryDTO dto) {
+        return commentService.queryFirstAndSecondCommentList(dto);
+    }
+
+
+    @PostMapping("/admin/first")
+    @ApiOperation(value = "管理端返回一级评论列表")
+    public PageInfo<CommentAdminVo> firstCommentsListAdminApi(@RequestBody @Valid CommentListAdminQueryDTO dto) {
+        return commentService.queryFirstCommentAdminList(dto);
+    }
+    @PostMapping("/admin/second")
+    @ApiOperation(value = "管理端返回二级评论列表")
+    public PageInfo<CommentAdminVo> secondCommentsListAdminApi(@RequestBody @Valid CommentListAdminQueryDTO dto) {
+        return commentService.querySecondCommentAdminList(dto);
     }
 }

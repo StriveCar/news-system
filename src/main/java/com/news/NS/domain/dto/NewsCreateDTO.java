@@ -1,19 +1,19 @@
 package com.news.NS.domain.dto;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
+import lombok.NonNull;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 
 @Data
-public class SecondCommentUpdateDTO {
-
+@ToString
+public class NewsCreateDTO {
     @NotNull
     private Integer publisherId;
-
     @NotNull
-    private Integer commentId;
-
-    @Length(min = 1, max = 1000)
+    private Integer sectionId;
+    private String title;
     private String content;
 }

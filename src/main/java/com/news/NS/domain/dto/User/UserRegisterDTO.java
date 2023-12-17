@@ -1,4 +1,4 @@
-package com.news.NS.domain.dto;
+package com.news.NS.domain.dto.User;
 import lombok.Data;
 import lombok.ToString;
 

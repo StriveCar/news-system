@@ -48,19 +48,20 @@ public class SectionController {
         return sectionService.querySectionDataList(page,size);
     }
     @PostMapping("/section/add")
-    @ApiOperation(value = "添加配置")
+    @ApiOperation(value = "添加栏目")
     public Section addSectionApi(@RequestParam("name") String sectionName) {
         return sectionService.addSection(sectionName);
     }
 
-    @GetMapping("/section/del/{id}")
-    @ApiOperation(value = "删除配置")
-    public void delSectionApi(@PathVariable("id") Integer id) {
+    @DeleteMapping("/section/del")
+    @ApiOperation(value = "删除栏目")
+    @SaCheckRole(value = {CommonConstant.SUPER_ADMIN})
+    public void delSectionApi(@RequestParam("id") Integer id) {
         sectionService.delSection(id);
     }
 
     @PostMapping("/section/update")
-    @ApiOperation(value = "更新配置")
+    @ApiOperation(value = "更新栏目")
     public void updateSysConfigApi(@RequestBody Section section) {
         sectionService.updateSection(section);
     }
