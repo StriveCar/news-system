@@ -2,6 +2,7 @@ package com.news.NS.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
+import com.github.pagehelper.Page;
 import com.news.NS.common.CommonConstant;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
@@ -48,5 +49,9 @@ public class ComplaintController {
     @ApiOperation(value = "查询举报")
     public PageInfo<Complaint> searchComplaint(@RequestBody ComplaintSearchDTO<String> dto){
         return complaintService.searchComplaint(dto);
+    }
+    @GetMapping("/complaint/get/by-complainer")
+    public PageInfo<Complaint> getByComplainerId(@RequestParam ComplaintSearchDTO<Integer> dto){
+        return complaintService.getByComplainerId(dto);
     }
 }
