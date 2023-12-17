@@ -11,6 +11,8 @@ import com.news.NS.domain.dto.ComplaintDeleteDTO;
 import com.news.NS.domain.dto.ComplaintModifyDTO;
 import com.news.NS.domain.dto.ComplaintSearchDTO;
 import com.news.NS.service.ComplaintService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.apache.ibatis.annotations.Delete;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @ResponseBodyResult
-@ApiOperation(value = "举报模块")
+@Api(tags = "举报模块")
 @Validated
 public class ComplaintController {
     private final ComplaintService complaintService;
