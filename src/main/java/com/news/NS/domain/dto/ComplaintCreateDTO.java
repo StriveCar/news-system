@@ -9,5 +9,6 @@ import java.sql.Timestamp;
 @ToString
 public class ComplaintCreateDTO {
     private Integer newsId;
+    private Integer complainerId;
     private String reason;
 }

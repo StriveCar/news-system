@@ -47,10 +47,6 @@ public class NewsController {
     @ApiOperation(value = "修改新闻")
     @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
     public void modifyNews(@RequestBody News news){
-        /*
-         * 用于保存草稿内容
-         * news：修改后的新闻对象
-         */
         newsService.modifyNews(news);
     }
 
@@ -61,31 +57,31 @@ public class NewsController {
         newsService.delete(ids);
     }
 
-    @GetMapping("/news/get/byNewsId")
+    @GetMapping("/news/get/by-id")
     @ApiOperation(value = "根据新闻id获取新闻详情")
-    public Map<String,Object> getNewsById(@RequestParam("newsId") Integer id){
+    public Map<String,Object> getNewsById(@RequestParam("newsid") Integer id){
         return newsService.getNewsById(id);
     }
 
-    @GetMapping("/news/get/byPublisherId")
+    @GetMapping("/news/get/by-publisher")
     @ApiOperation(value = "根据作者id获取新闻")
     public PageInfo<News> getNewsByPublisherId(@RequestBody NewsSearchParamDTO<Integer> dto){
         return newsService.getNewsByPublisherId(dto);
     }
 
-    @GetMapping("/news/get/bySectionId")
+    @GetMapping("/news/get/by-section")
     @ApiOperation(value = "根据栏目id获取新闻")
     public PageInfo<News> getNewsBySectionId(@RequestBody NewsSearchParamDTO<Integer> dto){
         return newsService.getNewsBySectionId(dto);
     }
 
-    @GetMapping("/news/get/byPublishStatus")
+    @GetMapping("/news/get/by-status")
     @ApiOperation(value = "根据新闻状态获取新闻")
     public PageInfo<News> getNewsByPublishStatus(@RequestBody NewsSearchParamDTO<Byte> dto){
         return newsService.getNewsByPublishStatus(dto);
     }
 
-    @GetMapping("/news/all")
+    @GetMapping("/news/get/all")
     @ApiOperation(value = "获取全部新闻")
     public PageInfo<News> getAllNews(@Min(1)
                                      @RequestParam("page") Integer page,
