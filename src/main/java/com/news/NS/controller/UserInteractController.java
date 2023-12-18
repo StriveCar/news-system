@@ -31,7 +31,11 @@ public class UserInteractController {
     @Autowired
     NewsService newsService;
 
-
+    /**
+     * 点赞新闻
+     * @param newsId
+     * @return
+     */
     @PutMapping("/news/add-likes")
     @ApiOperation(value = "点赞新闻")
     public Map<String, Object> addNewsLikes(@RequestParam("newsId") Integer newsId) {
@@ -43,6 +47,11 @@ public class UserInteractController {
         }
     }
 
+    /**
+     * 收藏新闻
+     * @param collect
+     * @return
+     */
     @PostMapping("/user/collect-news")
     @ApiOperation(value="收藏新闻")
     public Result collectNews(@RequestBody @Valid Collect collect){
@@ -51,5 +60,15 @@ public class UserInteractController {
             return Result.success("收藏成功");
        else
            return Result.fail("收藏失败");
+    }
+
+    @DeleteMapping("/user/uncollect-news")
+    @ApiOperation(value="取消收藏")
+    public Result uncollectNews(@RequestBody @Valid Collect collect){
+        if(userInteractService.deletCollectInfo(collect)>0){
+            return Result.success("取消收藏成功");
+        }else {
+            return Result.fail("取消收藏失败");
+        }
     }
 }
