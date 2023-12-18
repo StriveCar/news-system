@@ -1,10 +1,9 @@
 package com.news.NS.mapper.focusMapper;
 
 import com.news.NS.domain.dto.UserInteract.UserFocusDTO;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import com.news.NS.domain.vo.FocusVo;
+
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -16,12 +15,24 @@ public interface FocusMapper {
     @Select("select * from user_focus where user_id=#{userId} and focused_user_id=#{focusedUserId}")
     UserFocusDTO getOneFocusInfo(UserFocusDTO userFocusDTO);
 
-    @Select("select * from user_focus where user_id=#{userId}")
-    List<UserFocusDTO> getFocusList(Integer userId);
+    @Select("select focused_user_id from user_focus where user_id=#{userId}")
+    List<Integer> getFocusIdList(Integer userId);
+
+    @Select("select user_id from user_focus where focused_user_id=#{focusedUserId}")
+    List<Integer> getFollowsIdList(Integer focusedUserId);
 
     @Select("select * from user_focus where focused_user_id=#{focusedUserId}")
     List<UserFocusDTO> getFollwList(Integer focusedUserId);
 
     @Delete("delete from user_focus where user_id=#{userId} and focused_user_id=#{focusedUserId}")
     int unfocusUser(UserFocusDTO userFocusDTO);
+
+    /**
+     * 根据用户id列表 查询用户id,昵称，头像
+     * @param ids  被关注的用户id
+     * @return
+     */
+    List<FocusVo> getFocusVoList(List<Integer> ids);
+
+
 }

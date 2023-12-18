@@ -5,12 +5,16 @@ import com.news.NS.common.AlertException;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.Collect;
 import com.news.NS.domain.dto.UserInteract.UserFocusDTO;
+import com.news.NS.domain.vo.FocusVo;
 import com.news.NS.mapper.*;
 import com.news.NS.mapper.focusMapper.FocusMapper;
+import io.swagger.models.auth.In;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
@@ -85,5 +89,24 @@ public class UserInteractService {
         if (focusMapper.getOneFocusInfo(userFocusDTO) == null)
             throw new AlertException(500, "用户不存在或您本来就没有关注该用户");
         return focusMapper.unfocusUser(userFocusDTO);
+    }
+
+    public List<FocusVo> getFocusList(Integer userId) {
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0)
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+
+        List<Integer> focusIds = focusMapper.getFocusIdList(userId);
+
+
+        return focusMapper.getFocusVoList(focusIds);
+    }
+
+    public List<FocusVo> getFollowsList(Integer focusedUserId) {
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(focusedUserId))) <= 0)
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+
+        List<Integer> followIds = focusMapper.getFollowsIdList(focusedUserId);
+
+        return focusMapper.getFocusVoList(followIds);
     }
 }

@@ -4,11 +4,14 @@ import com.news.NS.common.AlertException;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.Result;
 import com.news.NS.domain.Collect;
+
 import com.news.NS.domain.dto.UserInteract.UserFocusDTO;
+import com.news.NS.domain.vo.FocusVo;
 import com.news.NS.service.NewsService;
 import com.news.NS.service.UserInteractService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -88,5 +92,17 @@ public class UserInteractController {
             return Result.success("取消关注成功");
         else
             return Result.fail("取消关注失败");
+    }
+
+    @GetMapping("/user/focus")
+    @ApiOperation(value="获取用户关注列表")
+    public List<FocusVo> getFocusList(@RequestParam("userId") Integer userId){
+        return userInteractService.getFocusList(userId);
+    }
+
+    @GetMapping("/user/follows")
+    @ApiOperation(value="获取用户粉丝列表")
+    public List<FocusVo> getFollowsList(@RequestParam("focusedUserId") Integer focusedUserId){
+       return userInteractService.getFollowsList(focusedUserId);
     }
 }
