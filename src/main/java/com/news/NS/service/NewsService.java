@@ -244,28 +244,5 @@ public class NewsService {
         return packing(news, dto.getPage(), queryPageData.getTotal());
     }
 
-    /**
-     * 用户点赞
-     * @param newsId
-     * @return
-     */
-    public boolean addLikes(Integer newsId) {
-        //获取原点赞数
-        Integer likeNumber = newsMapper.selectLikeNumber(newsId);
-        //查得到新闻数据就增加点赞数
-        if (likeNumber != null) {
-            UpdateStatementProvider updateStatementProvider = update(NewsDynamicSqlSupport.news)
-                    .set(NewsDynamicSqlSupport.likeNumber)
-                    .equalTo(likeNumber + 1)
-                    .where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))
-                    .build()
-                    .render(RenderingStrategies.MYBATIS3);
-            newsMapper.update(updateStatementProvider);
-            return true;
-        } else {
-            return false;
-        }
 
-
-    }
 }

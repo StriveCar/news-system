@@ -1,16 +1,16 @@
 package com.news.NS.service;
 
 
-
 import com.news.NS.common.AlertException;
-import com.news.NS.mapper.NewsDynamicSqlSupport;
-import com.news.NS.mapper.NewsMapper;
-
-
+import com.news.NS.common.domain.ResultCode;
+import com.news.NS.domain.Collect;
+import com.news.NS.mapper.*;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
@@ -22,7 +22,12 @@ public class UserInteractService {
     @Autowired
     NewsMapper newsMapper;
 
-    public String addLikes(Integer newsId) {
+    @Autowired
+    CollectMapper collectMapper;
+    @Autowired
+    UserMapper userMapper;
+
+    public boolean addLikes(Integer newsId) {
         //获取原点赞数
         Integer likeNumber = newsMapper.selectLikeNumber(newsId);
         //查得到新闻数据就增加点赞数
@@ -34,11 +39,28 @@ public class UserInteractService {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             newsMapper.update(updateStatementProvider);
-            return "点赞成功";
+            return true;
         } else {
-            throw new AlertException(500,"新闻不存在，点赞失败");
+            return false;
         }
 
 
+    }
+
+    public int addCollectInfo(Collect collect) {
+        Integer newsId = collect.getNewsId();
+        Integer userId = collect.getUserId();
+        if (newsMapper.count(c -> c.where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))) <= 0) { // 数据库不存在该 newsId
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该新闻不存在");
+        }
+        else if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0) {
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+        }
+
+        else if(collectMapper.count(c->c.where(CollectDynamicSqlSupport.userId,isEqualTo(userId)).and(CollectDynamicSqlSupport.newsId,isEqualTo(newsId))) >0 ){
+            throw new AlertException(500,"该新闻已被该用户收藏");
+        }
+
+        else return collectMapper.insert(collect);
     }
 }
