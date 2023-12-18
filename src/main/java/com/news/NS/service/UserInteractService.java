@@ -4,8 +4,9 @@ package com.news.NS.service;
 import com.news.NS.common.AlertException;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.Collect;
+import com.news.NS.domain.dto.UserInteract.UserFocusDTO;
 import com.news.NS.mapper.*;
-import io.swagger.models.auth.In;
+import com.news.NS.mapper.focusMapper.FocusMapper;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ public class UserInteractService {
     CollectMapper collectMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    FocusMapper focusMapper;
 
     public boolean addLikes(Integer newsId) {
         //获取原点赞数
@@ -59,14 +62,28 @@ public class UserInteractService {
     }
 
     public int deletCollectInfo(Collect collect) {
-        Integer userId=collect.getUserId();
-        Integer newsId=collect.getNewsId();
+        Integer userId = collect.getUserId();
+        Integer newsId = collect.getNewsId();
         if (collectMapper.count(c -> c.where(CollectDynamicSqlSupport.userId, isEqualTo(userId)).and(CollectDynamicSqlSupport.newsId, isEqualTo(newsId))) <= 0) {
             throw new AlertException(500, "用户不存在或新闻不存在或该新闻本来就没被收藏");
         }
 
-       return collectMapper.deleteByPrimaryKey(userId,newsId);
+        return collectMapper.deleteByPrimaryKey(userId, newsId);
 
 
+    }
+
+    public int focusUser(UserFocusDTO userFocusDTO) {
+        if (focusMapper.getOneFocusInfo(userFocusDTO) != null)
+            throw new AlertException(500, "不能重复关注");
+
+        return focusMapper.focusUser(userFocusDTO);
+    }
+
+
+    public int unfocusUser(UserFocusDTO userFocusDTO) {
+        if (focusMapper.getOneFocusInfo(userFocusDTO) == null)
+            throw new AlertException(500, "用户不存在或您本来就没有关注该用户");
+        return focusMapper.unfocusUser(userFocusDTO);
     }
 }

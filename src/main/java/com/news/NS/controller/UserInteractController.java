@@ -4,7 +4,7 @@ import com.news.NS.common.AlertException;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.Result;
 import com.news.NS.domain.Collect;
-import com.news.NS.domain.dto.UserInteract.CollectNewsDTO;
+import com.news.NS.domain.dto.UserInteract.UserFocusDTO;
 import com.news.NS.service.NewsService;
 import com.news.NS.service.UserInteractService;
 import io.swagger.annotations.Api;
@@ -15,7 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
+
 import java.util.Map;
 
 @RestController
@@ -70,5 +70,23 @@ public class UserInteractController {
         }else {
             return Result.fail("取消收藏失败");
         }
+    }
+
+    @PostMapping("/user/focus")
+    @ApiOperation(value="用户关注")
+    public Result focus(@RequestBody UserFocusDTO userFocusDTO){
+
+        if(userInteractService.focusUser(userFocusDTO) >0)
+            return Result.success("关注成功");
+        else
+            return Result.fail("关注失败");
+    }
+    @DeleteMapping("/user/unfocus")
+    @ApiOperation(value = "取消关注")
+    public Result unfocus(@RequestBody UserFocusDTO userFocusDTO){
+        if(userInteractService.unfocusUser(userFocusDTO) >0 )
+            return Result.success("取消关注成功");
+        else
+            return Result.fail("取消关注失败");
     }
 }
