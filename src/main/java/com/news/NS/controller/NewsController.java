@@ -14,6 +14,7 @@ import com.news.NS.service.NewsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import io.swagger.annotations.ApiParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,11 +97,5 @@ public class NewsController {
         return newsService.searchNews(dto);
     }
 
-    @PutMapping("/news/add-likes")
-    @ApiOperation(value = "点赞新闻")
-    public Map<String,Object> addNewsLikes(@RequestParam("newsId") Integer newsId){
-         Map<String,Object> result=new HashMap<>();
-         result.put("result",newsService.addLikes(newsId));
-         return result;
-    }
+
 }

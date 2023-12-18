@@ -244,7 +244,12 @@ public class NewsService {
         return packing(news, dto.getPage(), queryPageData.getTotal());
     }
 
-    public String addLikes(Integer newsId) {
+    /**
+     * 用户点赞
+     * @param newsId
+     * @return
+     */
+    public boolean addLikes(Integer newsId) {
         //获取原点赞数
         Integer likeNumber = newsMapper.selectLikeNumber(newsId);
         //查得到新闻数据就增加点赞数
@@ -256,9 +261,9 @@ public class NewsService {
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
             newsMapper.update(updateStatementProvider);
-            return "点赞成功";
+            return true;
         } else {
-            throw new AlertException(500,"新闻不存在，点赞失败");
+            return false;
         }
 
 
