@@ -12,7 +12,6 @@ import com.news.NS.domain.User;
 import com.news.NS.domain.dto.*;
 import com.news.NS.domain.vo.ApplicationListVo;
 import com.news.NS.mapper.*;
-import com.sun.media.sound.AiffFileReader;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
