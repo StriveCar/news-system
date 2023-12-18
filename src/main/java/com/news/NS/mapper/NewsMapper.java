@@ -10,7 +10,6 @@ import java.util.Optional;
 import javax.annotation.Generated;
 
 import com.news.NS.domain.vo.SectionNewsVo;
-import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
@@ -223,4 +222,7 @@ public interface NewsMapper {
 
     @Select("select sum(news_views) as viewsSum,sum(like_number) as likeSum from news")
     Integer selectData();
+
+    @Select("select like_number from news where news_id=#{newsId}")
+    Integer selectLikeNumber(Integer newsId);
 }

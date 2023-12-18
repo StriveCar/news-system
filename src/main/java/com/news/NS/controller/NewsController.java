@@ -13,12 +13,13 @@ import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.service.NewsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.hibernate.validator.constraints.Range;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+
+
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -93,5 +94,13 @@ public class NewsController {
     @ApiOperation(value = "模糊查询新闻")
     public PageInfo<News> searchNews(@RequestBody NewsSearchParamDTO<String> dto){
         return newsService.searchNews(dto);
+    }
+
+    @PutMapping("/news/add-likes")
+    @ApiOperation(value = "点赞新闻")
+    public Map<String,Object> addNewsLikes(@RequestParam("newsId") Integer newsId){
+         Map<String,Object> result=new HashMap<>();
+         result.put("result",newsService.addLikes(newsId));
+         return result;
     }
 }
