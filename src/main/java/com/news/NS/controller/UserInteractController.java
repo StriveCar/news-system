@@ -43,9 +43,9 @@ public class UserInteractController {
      */
     @PutMapping("/news/add-likes")
     @ApiOperation(value = "点赞新闻")
-    public Map<String, Object> addNewsLikes(@RequestParam("newsId") Integer newsId) {
+    public Map<String, Object> addNewsLikes(@RequestParam("newsId") Integer newsId,@RequestParam("userId") Integer userId) {
 
-        if (userInteractService.addLikes(newsId) == true) {
+        if (userInteractService.addLikes(newsId,userId) == true) {
             return null;
         } else {
             throw new AlertException(500, "新闻不存在，点赞失败");

@@ -41,9 +41,13 @@ public class UserInteractService {
     @Autowired
     SectionMapper sectionMapper;
 
-    public boolean addLikes(Integer newsId) {
+    public boolean addLikes(Integer newsId,Integer userId) {
         //获取原点赞数
         Integer likeNumber = newsMapper.selectLikeNumber(newsId);
+        //游客不能点赞
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0)
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+
         //查得到新闻数据就增加点赞数
         if (likeNumber != null) {
             UpdateStatementProvider updateStatementProvider = update(NewsDynamicSqlSupport.news)
