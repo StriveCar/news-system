@@ -6,19 +6,17 @@ import com.news.NS.common.CommonConstant;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.domain.News;
-import com.news.NS.domain.dto.NewsCreateDTO;
-import com.news.NS.domain.dto.NewsListDTO;
-import com.news.NS.domain.dto.NewsSearchParamDTO;
+import com.news.NS.domain.dto.News.NewsCreateDTO;
+import com.news.NS.domain.dto.News.NewsGetDTO;
+import com.news.NS.domain.dto.News.NewsListDTO;
+import com.news.NS.domain.dto.News.NewsSearchParamDTO;
 import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.service.NewsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
@@ -62,8 +60,8 @@ public class NewsController {
 
     @GetMapping("/news/get/by-id")
     @ApiOperation(value = "根据新闻id获取新闻详情")
-    public Map<String,Object> getNewsById(@RequestParam("newsid") Integer id){
-        return newsService.getNewsById(id);
+    public Map<String,Object> getNewsById(NewsGetDTO newsGetDTO){
+        return newsService.getNewsById(newsGetDTO);
     }
 
     @GetMapping("/news/get/by-publisher")

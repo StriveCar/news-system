@@ -2,21 +2,17 @@ package com.news.NS.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
-import com.github.pagehelper.Page;
 import com.news.NS.common.CommonConstant;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.domain.Complaint;
-import com.news.NS.domain.dto.ComplaintCreateDTO;
-import com.news.NS.domain.dto.ComplaintDeleteDTO;
-import com.news.NS.domain.dto.ComplaintModifyDTO;
-import com.news.NS.domain.dto.ComplaintSearchDTO;
+import com.news.NS.domain.dto.Complaint.ComplaintCreateDTO;
+import com.news.NS.domain.dto.Complaint.ComplaintDeleteDTO;
+import com.news.NS.domain.dto.Complaint.ComplaintModifyDTO;
+import com.news.NS.domain.dto.Complaint.ComplaintSearchDTO;
 import com.news.NS.service.ComplaintService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 

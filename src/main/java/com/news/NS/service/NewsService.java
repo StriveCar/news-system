@@ -9,9 +9,10 @@ import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.News;
 import com.news.NS.domain.Section;
 import com.news.NS.domain.User;
-import com.news.NS.domain.dto.NewsCreateDTO;
-import com.news.NS.domain.dto.NewsListDTO;
-import com.news.NS.domain.dto.NewsSearchParamDTO;
+import com.news.NS.domain.dto.News.NewsCreateDTO;
+import com.news.NS.domain.dto.News.NewsGetDTO;
+import com.news.NS.domain.dto.News.NewsListDTO;
+import com.news.NS.domain.dto.News.NewsSearchParamDTO;
 import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.mapper.NewsDynamicSqlSupport;
 import com.news.NS.mapper.NewsMapper;
@@ -22,11 +23,9 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -38,7 +37,6 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 @Service
 public class NewsService {
     private final NewsMapper newsMapper;
-
     private final UserMapper userMapper;
     private final SectionMapper sectionMapper;
     public NewsService(NewsMapper newsMapper,UserMapper userMapper,SectionMapper sectionMapper){
@@ -134,25 +132,44 @@ public class NewsService {
         }
     }
 
-    public Map<String,Object> getNewsById(Integer id){
+    public Map<String,Object> getNewsById(NewsGetDTO newsGetDTO){
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.newsId,isEqualTo(id))
+                .where(NewsDynamicSqlSupport.newsId,isEqualTo(newsGetDTO.getNewsId()))
                 .build().render(RenderingStrategies.MYBATIS3);
-        Optional<News> optional = newsMapper.selectByPrimaryKey(id);
+        Optional<News> optional = newsMapper.selectByPrimaryKey(newsGetDTO.getNewsId());
+        News news = optional.get();
         if(optional.isPresent()){
-            News news = optional.get();
             if(news.getPublishStatus().equals(CommonConstant.NEWS_DISABLE)){
                 throw new AlertException(500,"新闻已删除");
-            } else {
-                Map<String,Object> map = new HashMap<>();
-                map.put("news",news);
-                updateViews(news);
-                return map;
             }
         } else {
             throw new AlertException(500,"新闻不存在");
         }
+
+        Map<String,Object> map = new HashMap<>();
+        map.put("news",news);
+        updateViews(news);
+        //取作者昵称、头像
+        map.put("userName",news.getPublisherId());
+        String url = "";
+        url = newsMapper.selectAvatar(news.getPublisherId());
+        if(!url.isEmpty()){
+            map.put("avatar_url",url);
+        }
+        //读者是否订阅了该新闻的作者
+        if(newsMapper.judgeFocusByUserId(newsGetDTO.getUserId(), news.getPublisherId()) == 1){
+            map.put("isFocusPublisher",true);
+        } else {
+            map.put("isFocusPublisher",false);
+        }
+        //读者是否收藏该新闻
+        if(newsMapper.judgeCollectByUserId(newsGetDTO.getUserId(), news.getNewsId()) == 1){
+            map.put("isCollect",true);
+        } else {
+            map.put("isCollect",false);
+        }
+        return map;
     }
 
     public void updateViews(News news){

@@ -1,4 +1,4 @@
-package com.news.NS.domain.dto;
+package com.news.NS.domain.dto.Complaint;
 
 import io.swagger.models.auth.In;
 import lombok.Data;

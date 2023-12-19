@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
 
+import com.news.NS.domain.dto.News.NewsGetDTO;
 import com.news.NS.domain.vo.SectionNewsVo;
 import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.*;
@@ -223,4 +224,14 @@ public interface NewsMapper {
 
     @Select("select sum(news_views) as viewsSum,sum(like_number) as likeSum from news")
     Integer selectData();
+
+    @Select("select username from user_info where user_id = #{userId}")
+    String selectUserName(Integer userId);
+    @Select("select avatar_url from user_info where user_id = #{userId}")
+    String selectAvatar(Integer userId);
+
+    @Select("select count(*) from user_focus where user_id =#{userId} and focused_user_id = #{focusedUserId}")
+    Integer judgeFocusByUserId(Integer userId, Integer focusedUserId);
+    @Select("select count(*) from news_collection where user_id = #{userId} and news_id = #{newsId}")
+    Integer judgeCollectByUserId(Integer userId,Integer newsId);
 }
