@@ -4,7 +4,10 @@ package com.news.NS.service;
 import com.news.NS.common.AlertException;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.Collect;
+import com.news.NS.domain.News;
+import com.news.NS.domain.Section;
 import com.news.NS.domain.dto.UserInteract.UserFocusDTO;
+import com.news.NS.domain.vo.CollectNewsOv;
 import com.news.NS.domain.vo.FocusVo;
 import com.news.NS.mapper.*;
 import com.news.NS.mapper.focusMapper.FocusMapper;
@@ -14,7 +17,9 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
 import static org.mybatis.dynamic.sql.SqlBuilder.update;
@@ -32,6 +37,9 @@ public class UserInteractService {
     UserMapper userMapper;
     @Autowired
     FocusMapper focusMapper;
+
+    @Autowired
+    SectionMapper sectionMapper;
 
     public boolean addLikes(Integer newsId) {
         //获取原点赞数
@@ -108,5 +116,36 @@ public class UserInteractService {
         List<Integer> followIds = focusMapper.getFollowsIdList(focusedUserId);
 
         return focusMapper.getFocusVoList(followIds);
+    }
+
+    public List<CollectNewsOv> getCollectNewsList(Integer userId) {
+        //先获取收藏的新闻的id列表
+        List<Integer> newsIdList=collectMapper.selectNewsIdsByUserId(userId);
+
+        //新闻列表
+        List<CollectNewsOv> result=new ArrayList<>();
+        String sectionName="";
+        String publisherAvatar="";
+        String publisherName="";
+        for(Integer newsId : newsIdList){
+            CollectNewsOv collectNewsOv = new CollectNewsOv();
+            //根据新闻id获取新闻的部分信息
+            News news=newsMapper.selectOneNews(newsId);
+            collectNewsOv.setNewsId(newsId);
+            collectNewsOv.setTitle(news.getTitle());
+            collectNewsOv.setContent(news.getContent());
+
+/*            sectionName=sectionMapper.getNameById(news.getSectionId());
+            publisherName=userMapper.selectUsernameById(news.getPublisherId());
+            publisherAvatar=userMapper.selectAvatarUrlById(news.getPublisherId());*/
+
+            collectNewsOv.setPublisherName(userMapper.selectUsernameById(news.getPublisherId()));
+            collectNewsOv.setPublisherAvatarUrl(userMapper.selectAvatarUrlById(news.getPublisherId()));
+            collectNewsOv.setSectionName(sectionMapper.getNameById(news.getSectionId()));
+            result.add(collectNewsOv);
+
+        }
+
+        return result;
     }
 }

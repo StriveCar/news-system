@@ -225,4 +225,7 @@ public interface NewsMapper {
 
     @Select("select like_number from news where news_id=#{newsId}")
     Integer selectLikeNumber(Integer newsId);
+
+    @Select("select title,publisher_id,section_id,content from news where news_id=#{newsId}")
+    News selectOneNews(Integer newsId);
 }
