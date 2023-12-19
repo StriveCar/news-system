@@ -223,4 +223,7 @@ public interface UserMapper {
 
     @Select("SELECT username,sum(news_views) as viewsSum,sum(like_number) as likeSum ,sum(news_views+like_number) as sum FROM user_info JOIN news ON user_info.user_id = news.publisher_id GROUP BY news.publisher_id ORDER BY sum DESC LIMIT 7")
     List<PulisherDataVo> pulisherData();
+
+    @Select("SELECT COUNT(*) AS count FROM user_info GROUP BY identification")
+    List<Integer> selectRoleCount();
 }

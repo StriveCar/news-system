@@ -10,14 +10,20 @@ import com.news.NS.domain.News;
 import com.news.NS.domain.Section;
 import com.news.NS.domain.User;
 import com.news.NS.domain.dto.NewsCreateDTO;
+import com.news.NS.domain.dto.NewsListDTO;
 import com.news.NS.domain.dto.NewsSearchParamDTO;
+import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.mapper.NewsDynamicSqlSupport;
 import com.news.NS.mapper.NewsMapper;
 import com.news.NS.mapper.SectionMapper;
 import com.news.NS.mapper.UserMapper;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
+import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,12 +31,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 @Service
 public class NewsService {
     private final NewsMapper newsMapper;
+
     private final UserMapper userMapper;
     private final SectionMapper sectionMapper;
     public NewsService(NewsMapper newsMapper,UserMapper userMapper,SectionMapper sectionMapper){
@@ -38,6 +46,7 @@ public class NewsService {
         this.userMapper = userMapper;
         this.sectionMapper = sectionMapper;
     }
+
     public void create(NewsCreateDTO newsDTO) {
         News temp = new News();
         //用户身份校验
@@ -181,15 +190,39 @@ public class NewsService {
         return packing(news,dto.getPage(),queryPageData.getTotal());
     }
 
-    public PageInfo<News> getAllNews(Integer page, Integer size) {
-        SelectStatementProvider queryStatement = select(newsMapper.selectList)
+    public PageInfo<NewsListVo> getNewsList(NewsListDTO dto) {
+        String content = "%" + dto.getContent() + "%";
+        String title = "%" + dto.getTitle() + "%";
+        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder queryExpressionWhereBuilder = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.publishStatus,isNotEqualTo(CommonConstant.NEWS_DISABLE))
+                .where(NewsDynamicSqlSupport.title, isLikeWhenPresent(title))
+                .and(NewsDynamicSqlSupport.content, isLike(content))
+                .and(NewsDynamicSqlSupport.publishStatus, isNotEqualTo(dto.getStatus()));
+
+        if (dto.getSectionId() != null) {
+            queryExpressionWhereBuilder.and(NewsDynamicSqlSupport.sectionId, isEqualTo(dto.getSectionId()));
+        }
+
+        SelectStatementProvider selectStatement = queryExpressionWhereBuilder
+                .orderBy(NewsDynamicSqlSupport.publishTime.descending())
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(page, size);
-        List<News> news = newsMapper.selectMany(queryStatement);
-        return packing(news,page,queryPageData.getTotal());
+        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
+        List<News> newsList = newsMapper.selectMany(selectStatement);
+
+        BeanCopier newsCopier = BeanCopier.create(News.class, NewsListVo.class, false);
+        List<NewsListVo> newsListVos = newsList.stream().map(item->{
+            NewsListVo newsListVo = new NewsListVo();
+            newsCopier.copy(item,newsListVo,null);
+            newsListVo.setPublisherName(userMapper.selectByPrimaryKey(item.getPublisherId()).get().getUsername());
+            newsListVo.setSectionName(sectionMapper.selectByPrimaryKey(item.getSectionId()).get().getSectionName());
+            return newsListVo;
+        }).collect(Collectors.toList());
+        PageInfo<NewsListVo> pageInfo = new PageInfo<>();
+        pageInfo.setPageData(newsListVos);
+        pageInfo.setPage(dto.getPage());
+        pageInfo.setTotalSize(queryPageData.getTotal());
+        return pageInfo;
     }
 
     private PageInfo<News> packing(List<News> news,Integer page,long total){

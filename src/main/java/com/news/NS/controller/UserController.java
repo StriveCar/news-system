@@ -1,12 +1,10 @@
 package com.news.NS.controller;
 
-import cn.dev33.satoken.annotation.SaCheckRole;
-import cn.dev33.satoken.annotation.SaMode;
 import cn.dev33.satoken.stp.StpUtil;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.domain.User;
-import com.news.NS.domain.dto.*;
+import com.news.NS.domain.dto.User.*;
 import com.news.NS.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

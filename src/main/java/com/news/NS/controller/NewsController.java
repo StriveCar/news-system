@@ -7,7 +7,9 @@ import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.domain.News;
 import com.news.NS.domain.dto.NewsCreateDTO;
+import com.news.NS.domain.dto.NewsListDTO;
 import com.news.NS.domain.dto.NewsSearchParamDTO;
+import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.service.NewsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -82,13 +84,10 @@ public class NewsController {
         return newsService.getNewsByPublishStatus(dto);
     }
 
-    @GetMapping("/news/get/all")
-    @ApiOperation(value = "获取全部新闻")
-    public PageInfo<News> getAllNews(@Min(1)
-                                     @RequestParam("page") Integer page,
-                                     @Range(min = 1, max = 100)
-                                     @RequestParam("size") Integer size){
-        return newsService.getAllNews(page,size);
+    @PostMapping("/news/list")
+    @ApiOperation(value = "获取新闻列表")
+    public PageInfo<NewsListVo> getNewsList(@RequestBody NewsListDTO newsListDTO){
+        return newsService.getNewsList(newsListDTO);
     }
 
     @GetMapping("/news/search")

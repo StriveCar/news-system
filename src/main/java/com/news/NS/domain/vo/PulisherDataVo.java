@@ -14,4 +14,5 @@ public class PulisherDataVo {
     private String username;
     private Integer viewsSum;
     private Integer likeSum;
+    private Integer newsCount;
 }

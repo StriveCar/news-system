@@ -3,7 +3,7 @@ package com.news.NS.controller;
 
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
-import com.news.NS.domain.dto.*;
+import com.news.NS.domain.dto.Comment.*;
 import com.news.NS.domain.vo.CommentAdminVo;
 import com.news.NS.domain.vo.FirstAndSecondCommentVo;
 import com.news.NS.domain.vo.FirstCommentVo;
