@@ -55,7 +55,7 @@ public class NewsController {
 
     @GetMapping("/news/delete/{ids}")
     @ApiOperation(value = "删除新闻")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
+    @SaCheckRole(value = {CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
     public void deleteNews(@PathVariable("ids") String ids){
         newsService.delete(ids);
     }
@@ -86,6 +86,7 @@ public class NewsController {
 
     @PostMapping("/news/list")
     @ApiOperation(value = "获取新闻列表")
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<NewsListVo> getNewsList(@RequestBody NewsListDTO newsListDTO){
         return newsService.getNewsList(newsListDTO);
     }

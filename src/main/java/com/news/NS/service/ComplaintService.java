@@ -98,6 +98,7 @@ public class ComplaintService {
 
         return packing(complaints,dto.getPage(), queryPageData.getTotal());
     }
+
     private PageInfo<Complaint> packing(List<Complaint> complaints,Integer page,long total){
         /*
          * 把多个News分页封装成Pageinfo然后返回

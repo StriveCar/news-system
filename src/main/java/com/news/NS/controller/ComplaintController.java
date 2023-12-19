@@ -53,9 +53,9 @@ public class ComplaintController {
     public PageInfo<Complaint> searchComplaint(@RequestBody ComplaintSearchDTO<String> dto){
         return complaintService.searchComplaint(dto);
     }
+
     @GetMapping("/complaint/get/by-complainer")
     @ApiOperation(value = "根据举报人获取举报")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<Complaint> getByComplainerId(@RequestParam ComplaintSearchDTO<Integer> dto){
         return complaintService.getByComplainerId(dto);
     }
