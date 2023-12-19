@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 @RestController
@@ -39,7 +40,7 @@ public class NewsController {
     @PostMapping("/news/publish")
     @ApiOperation(value = "发布新闻")
     @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
-    public void publishNews(@RequestParam("newsId") int newsId){
+    public void publishNews(@RequestParam("newsId") Integer newsId){
         newsService.publish(newsId);
     }
 

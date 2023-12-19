@@ -14,6 +14,8 @@ public class NewsCreateDTO {
     private Integer publisherId;
     @NotNull
     private Integer sectionId;
+    @NotNull
     private String title;
+    @NotNull
     private String content;
 }

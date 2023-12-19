@@ -5,6 +5,7 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Data
 @ToString
@@ -14,6 +15,7 @@ public class NewsSearchParamDTO<T> {
      * param可以是 sectionId、publisherId、publishStatus等
      * 类型可以是Integer、Byte、String等类型
      */
+    @NotNull
     private T param;
     @Min(1)
     private Integer page;

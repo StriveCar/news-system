@@ -45,6 +45,10 @@ public class SaTokenConfig implements WebMvcConfigurer {
         loginExcludePathPatterns.add("/comment/first");
         loginExcludePathPatterns.add("/comment/second");
 
+        loginExcludePathPatterns.add("/news/search");
+        loginExcludePathPatterns.add("/news/get/by-id");
+
+
         // 注解权限拦截!!!!!
         registry.addInterceptor(new SaAnnotationInterceptor()).addPathPatterns("/**");
         // 登录拦截器！！！！！！
