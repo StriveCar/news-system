@@ -54,8 +54,8 @@ public class CommentController {
 
     @PostMapping("/first/like/{commentId}")
     @ApiOperation(value = "一级评论点赞")
-    public void likeFirstCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
-        commentService.likeFirstComment(commentId);
+    public void likeFirstCommentApi(@RequestBody @Valid LikeDTO dto) {
+        commentService.likeFirstComment(dto.getCommentId(), dto.getUserId());
     }
 
     @PostMapping("/second")
@@ -72,15 +72,17 @@ public class CommentController {
 
     @DeleteMapping("/second/del/{commentId}")
     @ApiOperation(value = "删除二级评论")
-    public void deleteSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
+    public void deleteSecondCommentApi(
+            @NotNull @ApiParam(value = "删除的评论Id") @PathVariable Integer commentId
+    ) {
         commentService.deleteSecondComment(commentId);
     }
 
 
     @PostMapping("/second/like/{commentId}")
     @ApiOperation(value = "二级评论点赞")
-    public void likeSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
-        commentService.likeSecondComment(commentId);
+    public void likeSecondCommentApi(@RequestBody @Valid LikeDTO dto) {
+        commentService.likeSecondComment(dto.getCommentId(), dto.getUserId());
     }
 
     @PostMapping("/")

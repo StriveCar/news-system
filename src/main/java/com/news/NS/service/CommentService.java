@@ -151,7 +151,10 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
-    public void likeFirstComment(Integer commentId) {
+    public void likeFirstComment(Integer commentId, Integer userId) {
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) == 0) {
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+        }
         Optional<FirstComment> comment = firstCommentMapper.selectOne(c -> c.where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
             // 点赞数量 + 1
@@ -256,7 +259,10 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
-    public void likeSecondComment(Integer commentId) {
+    public void likeSecondComment(Integer commentId, Integer userId) {
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) == 0) {
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+        }
         Optional<SecondComment> comment = secondCommentMapper.selectOne(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
             int likeNumber = comment.get().getLikeNumber() + 1;
@@ -349,6 +355,7 @@ public class CommentService {
                 .render(RenderingStrategies.MYBATIS3);
 
         Page<FirstComment> queryPage = PageHelper.startPage(page, size);
+
         List<FirstComment> firstComments = firstCommentMapper.selectMany(firstStatement);
 
         List<CommentAdminVo> result = firstComments.stream().map(item -> {
