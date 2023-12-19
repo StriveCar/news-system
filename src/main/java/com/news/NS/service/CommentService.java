@@ -329,33 +329,23 @@ public class CommentService {
         return firstCommentMapper.count(CountDSL::where) + secondCommentMapper.count(CountDSL::where);
     }
 
-
     /**
      * 返回管理端所需要的所有一级评论
      */
     public PageInfo<CommentAdminVo> queryFirstCommentAdminList(CommentListAdminQueryDTO dto) {
         Integer page = dto.getPage();
         Integer size = dto.getSize();
-        Integer newsId = dto.getNewsId();
+        final String content = StringUtils.hasLength(dto.getContent()) ? dto.getContent() + "%" : null;
+//        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
+        final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(FirstCommentMapper.selectList)
+        SelectStatementProvider firstStatement = select(FirstCommentMapper.selectList)
                 .from(FirstCommentDynamicSqlSupport.firstComment)
-                .where();
-
-        if (newsId != null) {
-            // 数据库不存在该 newsId
-            if (newsMapper.count(c -> c.where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))) != 1) {
-                throw new AlertException(400, "该新闻不存在");
-            }
-            builder.and(FirstCommentDynamicSqlSupport.newsId, isEqualTo(newsId));
-        }
-
-        SelectStatementProvider firstStatement = builder
+                .where(FirstCommentDynamicSqlSupport.content,isLikeWhenPresent(content))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
         Page<FirstComment> queryPage = PageHelper.startPage(page, size);
-
         List<FirstComment> firstComments = firstCommentMapper.selectMany(firstStatement);
 
         List<CommentAdminVo> result = firstComments.stream().map(item -> {
@@ -365,19 +355,19 @@ public class CommentService {
             vo.setPublishTime(item.getPublishTime().getTime());
             vo.setContent(item.getContent());
             vo.setLikeNumber(item.getLikeNumber());
-            Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId())));
+            Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId()))
+                    .and(NewsDynamicSqlSupport.title,isLikeWhenPresent(title)));
             if (news.isPresent()) {
                 vo.setNewsContent(news.get().getContent());
                 vo.setNewsTitle(news.get().getTitle());
             } else {
-                vo.setNewsContent(null);
-                vo.setNewsTitle(null);
+                return null;
             }
             vo.setPublisher(queryUser(item.getPublisherId()));
             vo.setParentCommentContent(null);
             vo.setParentCommentId(-1);
             return vo;
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
         return generatePageInfo(queryPage, result);
     }
@@ -390,6 +380,9 @@ public class CommentService {
     public PageInfo<CommentAdminVo> querySecondCommentAdminList(CommentListAdminQueryDTO dto) {
         Integer page = dto.getPage();
         Integer size = dto.getSize();
+        final String content = StringUtils.hasLength(dto.getContent()) ? dto.getContent() + "%" : null;
+//        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
+        final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 //        Integer newsId = dto.getNewsId();
 
 //        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(FirstCommentMapper.selectList)
@@ -410,7 +403,7 @@ public class CommentService {
 
         SelectStatementProvider secondStatement = select(SecondCommentMapper.selectList)
                 .from(SecondCommentDynamicSqlSupport.secondComment)
-                .where()
+                .where(SecondCommentDynamicSqlSupport.content,isLikeWhenPresent(content))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -425,13 +418,13 @@ public class CommentService {
                 vo.setParentCommentId(firstComment.get().getCommentId());
                 vo.setParentCommentContent(firstComment.get().getContent());
 
-                Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(firstComment.get().getNewsId())));
+                Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(firstComment.get().getNewsId()))
+                        .and(NewsDynamicSqlSupport.title,isLikeWhenPresent(title)));
                 if (news.isPresent()) {
                     vo.setNewsContent(news.get().getContent());
                     vo.setNewsTitle(news.get().getTitle());
                 } else {
-                    vo.setNewsContent(null);
-                    vo.setNewsTitle(null);
+                    return null;
                 }
             }
             vo.setPublisher(queryUser(item.getPublisherId()));
@@ -442,7 +435,7 @@ public class CommentService {
             vo.setLikeNumber(item.getLikeNumber());
 
             return vo;
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
 
         return generatePageInfo(queryPage, result);
     }

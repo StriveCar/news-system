@@ -9,14 +9,13 @@ import com.news.NS.common.CommonConstant;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.User;
-import com.news.NS.domain.dto.*;
+import com.news.NS.domain.dto.User.*;
 import com.news.NS.mapper.UserDynamicSqlSupport;
 import com.news.NS.mapper.UserMapper;
 import com.news.NS.util.CommonUtils;
 import com.news.NS.util.RedisCacheUtil;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -51,10 +50,9 @@ public class UserService {
         String pwd = SaSecureUtil.md5(userLoginDTO.getPwd());
         SelectStatementProvider queryStatement = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
-                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAcu()))
+                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAct()))
                 .and(UserDynamicSqlSupport.password, isEqualTo(pwd))
-                .build()
-                .render(RenderingStrategies.MYBATIS3);
+                .build().render(RenderingStrategies.MYBATIS3);
         Optional<User> userOptional = userMapper.selectOne(queryStatement);
         User user;
         Map<String, Object> map = null;
@@ -123,7 +121,8 @@ public class UserService {
         String pwd = SaSecureUtil.md5(userLoginDTO.getPwd());
         SelectStatementProvider queryStatement = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
-                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAcu()))
+                .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAct()))
+                .or(UserDynamicSqlSupport.phoneNumber,isEqualTo(userLoginDTO.getAct()))
                 .and(UserDynamicSqlSupport.password, isEqualTo(pwd))
                 .build().render(RenderingStrategies.MYBATIS3);
         Optional<User> userOptional = userMapper.selectOne(queryStatement);

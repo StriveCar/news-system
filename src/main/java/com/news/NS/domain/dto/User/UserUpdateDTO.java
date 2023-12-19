@@ -1,10 +1,11 @@
-package com.news.NS.domain.dto;
+package com.news.NS.domain.dto.User;
 
 import lombok.Data;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 车
@@ -16,10 +17,10 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @ToString
 public class UserUpdateDTO {
-    @NotEmpty
+    @NotNull
     private Integer userId;
 
-    @Length(min = 1, max = 20)
+    @Length(min = 6, max = 20)
     private String account;
 
     @Length(min = 1, max = 16)

@@ -1,4 +1,4 @@
-package com.news.NS.domain.dto;
+package com.news.NS.domain.dto.Comment;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

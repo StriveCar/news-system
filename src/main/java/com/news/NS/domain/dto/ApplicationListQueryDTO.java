@@ -5,23 +5,24 @@ import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author 车
- * @date 2023/12/4 19 47
+ * @date 2023/12/17 20 43
  * discription
  */
 @Data
 @ToString
-public class UserListQueryDTO {
+public class ApplicationListQueryDTO {
     @Min(1)
     private Integer page;
 
     @Range(min = 1, max = 100)
     private Integer size;
 
+    private Byte status;
+    private Integer userId;
+    private String reason;
     private String name;
-
-    private Byte identification;
 }
-
