@@ -14,10 +14,7 @@ import com.news.NS.domain.dto.News.NewsGetDTO;
 import com.news.NS.domain.dto.News.NewsListDTO;
 import com.news.NS.domain.dto.News.NewsSearchParamDTO;
 import com.news.NS.domain.vo.NewsListVo;
-import com.news.NS.mapper.NewsDynamicSqlSupport;
-import com.news.NS.mapper.NewsMapper;
-import com.news.NS.mapper.SectionMapper;
-import com.news.NS.mapper.UserMapper;
+import com.news.NS.mapper.*;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -39,10 +36,15 @@ public class NewsService {
     private final NewsMapper newsMapper;
     private final UserMapper userMapper;
     private final SectionMapper sectionMapper;
-    public NewsService(NewsMapper newsMapper,UserMapper userMapper,SectionMapper sectionMapper){
+    private final CollectMapper collectMapper;
+    public NewsService(NewsMapper newsMapper,
+                       UserMapper userMapper,
+                       SectionMapper sectionMapper,
+                       CollectMapper collectMapper){
         this.newsMapper = newsMapper;
         this.userMapper = userMapper;
         this.sectionMapper = sectionMapper;
+        this.collectMapper = collectMapper;
     }
 
     public void create(NewsCreateDTO newsDTO) {
@@ -151,20 +153,23 @@ public class NewsService {
         map.put("news",news);
         updateViews(news);
         //取作者昵称、头像
-        map.put("userName",news.getPublisherId());
-        String url = "";
-        url = newsMapper.selectAvatar(news.getPublisherId());
-        if(!url.isEmpty()){
-            map.put("avatar_url",url);
+        Optional<User> optional1 = userMapper.selectByPrimaryKey(news.getPublisherId());
+        if(optional1.isPresent()){
+            User user = optional1.get();
+            map.put("username",user.getUsername());
+            map.put("avatar_url",user.getAvatarUrl());
+        } else {
+            throw new AlertException(ResultCode.USER_NOT_EXIST);
         }
-        //读者是否订阅了该新闻的作者
+
+        //读者是否关注了该新闻的作者
         if(newsMapper.judgeFocusByUserId(newsGetDTO.getUserId(), news.getPublisherId()) == 1){
             map.put("isFocusPublisher",true);
         } else {
             map.put("isFocusPublisher",false);
         }
         //读者是否收藏该新闻
-        if(newsMapper.judgeCollectByUserId(newsGetDTO.getUserId(), news.getNewsId()) == 1){
+        if(collectMapper.selectByPrimaryKey(newsGetDTO.getUserId(), newsGetDTO.getNewsId()).isPresent()){
             map.put("isCollect",true);
         } else {
             map.put("isCollect",false);
