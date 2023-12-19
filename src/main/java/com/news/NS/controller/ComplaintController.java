@@ -35,27 +35,27 @@ public class ComplaintController {
     }
     @GetMapping("/complaint/delete")
     @ApiOperation(value = "删除举报")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN})
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public void deleteComplaint(@RequestBody ComplaintDeleteDTO dto){
         complaintService.deleteComplaint(dto);
     }
 
     @PostMapping("/complaint/modify")
     @ApiOperation(value = "修改举报信息")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN})
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public void modifyComplaint(@RequestParam ComplaintModifyDTO dto){
         complaintService.modifyComplaint(dto);
     }
 
     @GetMapping("/complaint/search")
     @ApiOperation(value = "查询举报")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN})
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<Complaint> searchComplaint(@RequestBody ComplaintSearchDTO<String> dto){
         return complaintService.searchComplaint(dto);
     }
     @GetMapping("/complaint/get/by-complainer")
     @ApiOperation(value = "根据举报人获取举报")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN})
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<Complaint> getByComplainerId(@RequestParam ComplaintSearchDTO<Integer> dto){
         return complaintService.getByComplainerId(dto);
     }

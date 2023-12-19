@@ -53,10 +53,6 @@ public class NewsService {
         Optional<Section> optional1 = sectionMapper.selectByPrimaryKey(newsDTO.getSectionId());
         if(!optional1.isPresent()){
             throw new AlertException(500,"栏目不存在");
-        } else {
-            if(StringUtils.hasLength(optional1.get().getSectionName())){
-                throw new AlertException(ResultCode.FAILED);
-            }
         }
         temp.setSectionId(newsDTO.getSectionId());
         if(!StringUtils.hasLength(newsDTO.getTitle())){
@@ -113,12 +109,12 @@ public class NewsService {
         if(!optional.isPresent()){
             throw new AlertException(500,"的新闻不存在");
         } else {
-            if(optional.get().getPublishStatus() != CommonConstant.NEWS_NOTISSUE) {
+            if(!optional.get().getPublishStatus().equals(CommonConstant.NEWS_NOTISSUE)) {
                 throw new AlertException(ResultCode.ILLEGAL_OPERATION);
             }
         }
         UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
-                .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.NEWS_ISSUE)
+                .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.RESERVE_TO_BE_REVIEWED)
                 .set(NewsDynamicSqlSupport.publishTime).equalTo(timestamp)
                 .where(NewsDynamicSqlSupport.newsId,isEqualTo(newsId))
                 .and(NewsDynamicSqlSupport.publishStatus,isNotEqualTo(CommonConstant.NEWS_DISABLE))
@@ -162,10 +158,6 @@ public class NewsService {
         Optional<Section> optional = sectionMapper.selectByPrimaryKey(dto.getParam());
         if(!optional.isPresent()){
             throw new AlertException(500,"栏目不存在");
-        } else {
-            if(!StringUtils.hasLength(optional.get().getSectionName())){
-                throw new AlertException(500,"栏目名为空");
-            }
         }
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
