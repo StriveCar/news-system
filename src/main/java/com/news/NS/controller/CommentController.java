@@ -1,12 +1,9 @@
 package com.news.NS.controller;
 
 
-import cn.dev33.satoken.annotation.SaCheckRole;
-import cn.dev33.satoken.annotation.SaMode;
-import com.news.NS.common.CommonConstant;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
-import com.news.NS.domain.dto.Comment.*;
+import com.news.NS.domain.dto.*;
 import com.news.NS.domain.vo.CommentAdminVo;
 import com.news.NS.domain.vo.FirstAndSecondCommentVo;
 import com.news.NS.domain.vo.FirstCommentVo;
@@ -57,8 +54,8 @@ public class CommentController {
 
     @PostMapping("/first/like/{commentId}")
     @ApiOperation(value = "一级评论点赞")
-    public void likeFirstCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
-        commentService.likeFirstComment(commentId);
+    public void likeFirstCommentApi(@RequestBody @Valid LikeDTO dto) {
+        commentService.likeFirstComment(dto.getCommentId(), dto.getUserId());
     }
 
     @PostMapping("/second")
@@ -75,15 +72,17 @@ public class CommentController {
 
     @DeleteMapping("/second/del/{commentId}")
     @ApiOperation(value = "删除二级评论")
-    public void deleteSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
+    public void deleteSecondCommentApi(
+            @NotNull @ApiParam(value = "删除的评论Id") @PathVariable Integer commentId
+    ) {
         commentService.deleteSecondComment(commentId);
     }
 
 
     @PostMapping("/second/like/{commentId}")
     @ApiOperation(value = "二级评论点赞")
-    public void likeSecondCommentApi(@NotNull @ApiParam @PathVariable Integer commentId) {
-        commentService.likeSecondComment(commentId);
+    public void likeSecondCommentApi(@RequestBody @Valid LikeDTO dto) {
+        commentService.likeSecondComment(dto.getCommentId(), dto.getUserId());
     }
 
     @PostMapping("/")
@@ -95,13 +94,11 @@ public class CommentController {
 
     @PostMapping("/admin/first")
     @ApiOperation(value = "管理端返回一级评论列表")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<CommentAdminVo> firstCommentsListAdminApi(@RequestBody @Valid CommentListAdminQueryDTO dto) {
         return commentService.queryFirstCommentAdminList(dto);
     }
     @PostMapping("/admin/second")
     @ApiOperation(value = "管理端返回二级评论列表")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<CommentAdminVo> secondCommentsListAdminApi(@RequestBody @Valid CommentListAdminQueryDTO dto) {
         return commentService.querySecondCommentAdminList(dto);
     }
