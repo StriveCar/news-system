@@ -10,7 +10,7 @@ import com.news.NS.domain.FirstComment;
 import com.news.NS.domain.News;
 import com.news.NS.domain.SecondComment;
 import com.news.NS.domain.User;
-import com.news.NS.domain.dto.Comment.*;
+import com.news.NS.domain.dto.*;
 import com.news.NS.domain.vo.CommentAdminVo;
 import com.news.NS.domain.vo.FirstAndSecondCommentVo;
 import com.news.NS.domain.vo.FirstCommentVo;
@@ -23,15 +23,14 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.sql.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.*;
+import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
+import static org.mybatis.dynamic.sql.SqlBuilder.select;
 
 @Service
 @Slf4j
@@ -152,7 +151,10 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
-    public void likeFirstComment(Integer commentId) {
+    public void likeFirstComment(Integer commentId, Integer userId) {
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) == 0) {
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+        }
         Optional<FirstComment> comment = firstCommentMapper.selectOne(c -> c.where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
             // 点赞数量 + 1
@@ -257,7 +259,10 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
-    public void likeSecondComment(Integer commentId) {
+    public void likeSecondComment(Integer commentId, Integer userId) {
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) == 0) {
+            throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
+        }
         Optional<SecondComment> comment = secondCommentMapper.selectOne(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
             int likeNumber = comment.get().getLikeNumber() + 1;
@@ -323,7 +328,6 @@ public class CommentService {
     public long queryCommentCount() {
         return firstCommentMapper.count(CountDSL::where) + secondCommentMapper.count(CountDSL::where);
     }
-
 
     /**
      * 返回管理端所需要的所有一级评论
