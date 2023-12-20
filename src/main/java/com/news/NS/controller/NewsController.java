@@ -14,9 +14,12 @@ import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.service.NewsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import sun.jvm.hotspot.runtime.Bytes;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
 
@@ -66,20 +69,33 @@ public class NewsController {
 
     @GetMapping("/news/get/by-publisher")
     @ApiOperation(value = "根据作者id获取新闻")
-    public PageInfo<News> getNewsByPublisherId(@RequestBody NewsSearchParamDTO<Integer> dto){
-        return newsService.getNewsByPublisherId(dto);
+    public PageInfo<News> getNewsByPublisherId(@Min(1)
+                                               @RequestParam("page") Integer page,
+                                               @Range(min = 1, max = 100)
+                                               @RequestParam("size") Integer size,
+                                               @RequestParam Integer id){
+        return newsService.getNewsByPublisherId(page,size,id);
     }
 
     @GetMapping("/news/get/by-section")
     @ApiOperation(value = "根据栏目id获取新闻")
-    public PageInfo<News> getNewsBySectionId(@RequestBody NewsSearchParamDTO<Integer> dto){
-        return newsService.getNewsBySectionId(dto);
+    public PageInfo<News> getNewsBySectionId(@Min(1)
+                                             @RequestParam("page") Integer page,
+                                             @Range(min = 1, max = 100)
+                                             @RequestParam("size") Integer size,
+                                             @RequestParam Integer id){
+        return newsService.getNewsBySectionId(page,size,id);
     }
 
     @GetMapping("/news/get/by-status")
     @ApiOperation(value = "根据新闻状态获取新闻")
-    public PageInfo<News> getNewsByPublishStatus(@RequestBody NewsSearchParamDTO<Byte> dto){
-        return newsService.getNewsByPublishStatus(dto);
+    public PageInfo<News> getNewsByPublishStatus(@Min(1)
+                                                 @RequestParam("page") Integer page,
+                                                 @Range(min = 1, max = 100)
+                                                 @RequestParam("size") Integer size,
+                                                 @Range(min = CommonConstant.RESERVE_TO_BE_REVIEWED, max = CommonConstant.RESERVE_IS_TIME_OUT)
+                                                 @RequestParam Byte status){
+        return newsService.getNewsByPublishStatus(page,size,status);
     }
 
     @PostMapping("/news/list")
@@ -90,7 +106,11 @@ public class NewsController {
 
     @GetMapping("/news/search")
     @ApiOperation(value = "模糊查询新闻")
-    public PageInfo<News> searchNews(@RequestBody NewsSearchParamDTO<String> dto){
-        return newsService.searchNews(dto);
+    public PageInfo<News> searchNews(@Min(1)
+                                     @RequestParam("page") Integer page,
+                                     @Range(min = 1, max = 100)
+                                     @RequestParam("size") Integer size,
+                                     @RequestParam String key){
+        return newsService.searchNews(page,size,key);
     }
 }

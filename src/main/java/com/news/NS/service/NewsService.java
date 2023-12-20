@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sun.jvm.hotspot.runtime.Bytes;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -185,31 +186,31 @@ public class NewsService {
         newsMapper.update(updateStatement);
     }
 
-    public PageInfo<News> getNewsBySectionId(NewsSearchParamDTO<Integer> dto){
-        Optional<Section> optional = sectionMapper.selectByPrimaryKey(dto.getParam());
+    public PageInfo<News> getNewsBySectionId(Integer page,Integer size,Integer id){
+        Optional<Section> optional = sectionMapper.selectByPrimaryKey(id);
         if(!optional.isPresent()){
             throw new AlertException(500,"栏目不存在");
         }
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.sectionId,isEqualTo(dto.getParam()))
+                .where(NewsDynamicSqlSupport.sectionId,isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
+        Page<News> queryPageData = PageHelper.startPage(page,size);
         List<News> news = newsMapper.selectMany(sqlStatement);
-        return packing(news,dto.getPage(),queryPageData.getTotal());
+        return packing(news,page,queryPageData.getTotal());
     }
 
-    public PageInfo<News> getNewsByPublisherId(NewsSearchParamDTO<Integer> dto) {
+    public PageInfo<News> getNewsByPublisherId(Integer page,Integer size,Integer id) {
 
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.publisherId,isEqualTo(dto.getParam()))
+                .where(NewsDynamicSqlSupport.publisherId,isEqualTo(id))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
+        Page<News> queryPageData = PageHelper.startPage(page,size);
         List<News> news = newsMapper.selectMany(sqlStatement);
-        return packing(news,dto.getPage(),queryPageData.getTotal());
+        return packing(news,page,queryPageData.getTotal());
     }
 
     public PageInfo<NewsListVo> getNewsList(NewsListDTO dto) {
@@ -261,11 +262,8 @@ public class NewsService {
         return pageInfo;
     }
 
-    public PageInfo<News> searchNews(NewsSearchParamDTO<String> dto) {
-        if(!StringUtils.hasLength(dto.getParam())){
-            throw new AlertException(ResultCode.UPDATE_ERROR);
-        }
-        String likeKeyword = "%" + dto.getParam() + "%";
+    public PageInfo<News> searchNews(Integer page, Integer size, String key) {
+        String likeKeyword = "%" + key + "%";
 
         SelectStatementProvider selectStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
@@ -274,24 +272,21 @@ public class NewsService {
                 .and(NewsDynamicSqlSupport.publishStatus,isNotEqualTo(CommonConstant.NEWS_DISABLE))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
+        Page<News> queryPageData = PageHelper.startPage(page, size);
         List<News> newsList = newsMapper.selectMany(selectStatement);
 
-        return packing(newsList,dto.getPage(), queryPageData.getTotal());
+        return packing(newsList,page, queryPageData.getTotal());
     }
 
-    public PageInfo<News> getNewsByPublishStatus(NewsSearchParamDTO<Byte> dto) {
-        if(dto.getParam() < 1 || dto.getParam() > 4){
-            throw new AlertException(406,"非法参数："+dto.getParam());
-        }
+    public PageInfo<News> getNewsByPublishStatus(Integer page, Integer size, Byte status) {
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.publishStatus,isEqualTo(dto.getParam()))
+                .where(NewsDynamicSqlSupport.publishStatus, isEqualTo(status))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
+        Page<News> queryPageData = PageHelper.startPage(page, size);
         List<News> news = newsMapper.selectMany(sqlStatement);
 
-        return packing(news,dto.getPage(),queryPageData.getTotal());
+        return packing(news,page,queryPageData.getTotal());
     }
 }
