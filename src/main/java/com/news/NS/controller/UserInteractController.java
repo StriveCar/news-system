@@ -4,7 +4,7 @@ import com.news.NS.common.AlertException;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.domain.Collect;
 import com.news.NS.domain.dto.UserInteract.UserFocusDTO;
-import com.news.NS.domain.vo.CollectNewsOv;
+import com.news.NS.domain.vo.CollectNewsVo;
 import com.news.NS.domain.vo.FocusVo;
 import com.news.NS.service.NewsService;
 import com.news.NS.service.UserInteractService;
@@ -83,7 +83,7 @@ public class UserInteractController {
 
     @GetMapping("/user/collect-list")
     @ApiOperation(value = "获取收藏列表")
-    public List<CollectNewsOv> getCollectNewsList(@RequestParam("userId") Integer userId) {
+    public List<CollectNewsVo> getCollectNewsList(@RequestParam("userId") Integer userId) {
         return userInteractService.getCollectNewsList(userId);
     }
 

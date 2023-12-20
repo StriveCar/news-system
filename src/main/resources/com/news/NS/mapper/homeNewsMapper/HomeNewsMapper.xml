@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.news.NS.mapper.homeNewsMapper.HomeNewsMapper">
+    <select id="selectPictureNewsIdAndNewsTitle" resultType="com.news.NS.domain.vo.HomePictureNewsVo">
+        select news_id,title
+        from news
+        where news_id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        order by publish_time desc limit 5;
+    </select>
+</mapper>
