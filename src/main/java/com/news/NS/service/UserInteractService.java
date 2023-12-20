@@ -128,9 +128,7 @@ public class UserInteractService {
 
         //新闻列表
         List<CollectNewsOv> result=new ArrayList<>();
-        String sectionName="";
-        String publisherAvatar="";
-        String publisherName="";
+
         for(Integer newsId : newsIdList){
             CollectNewsOv collectNewsOv = new CollectNewsOv();
             //根据新闻id获取新闻的部分信息
@@ -139,9 +137,6 @@ public class UserInteractService {
             collectNewsOv.setTitle(news.getTitle());
             collectNewsOv.setContent(news.getContent());
 
-/*            sectionName=sectionMapper.getNameById(news.getSectionId());
-            publisherName=userMapper.selectUsernameById(news.getPublisherId());
-            publisherAvatar=userMapper.selectAvatarUrlById(news.getPublisherId());*/
 
             collectNewsOv.setPublisherName(userMapper.selectUsernameById(news.getPublisherId()));
             collectNewsOv.setPublisherAvatarUrl(userMapper.selectAvatarUrlById(news.getPublisherId()));
