@@ -197,7 +197,7 @@ public class NewsService {
                 .from(NewsDynamicSqlSupport.news)
                 .where(NewsDynamicSqlSupport.title, isLikeWhenPresent(title))
                 .and(NewsDynamicSqlSupport.content, isLike(content))
-                .and(NewsDynamicSqlSupport.publishStatus, isNotEqualTo(dto.getStatus()));
+                .and(NewsDynamicSqlSupport.publishStatus, isEqualTo(dto.getStatus()));
 
         if (dto.getSectionId() != null) {
             queryExpressionWhereBuilder.and(NewsDynamicSqlSupport.sectionId, isEqualTo(dto.getSectionId()));

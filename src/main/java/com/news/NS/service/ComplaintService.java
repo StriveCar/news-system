@@ -9,22 +9,24 @@ import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.Complaint;
 import com.news.NS.domain.News;
 import com.news.NS.domain.User;
-import com.news.NS.domain.dto.ComplaintCreateDTO;
-import com.news.NS.domain.dto.ComplaintDeleteDTO;
-import com.news.NS.domain.dto.ComplaintModifyDTO;
-import com.news.NS.domain.dto.ComplaintSearchDTO;
+import com.news.NS.domain.dto.*;
+import com.news.NS.domain.vo.ComplaintListVo;
+import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.mapper.*;
 import org.apache.poi.util.StringUtil;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
@@ -82,21 +84,46 @@ public class ComplaintService {
         }
     }
 
-    public PageInfo<Complaint> searchComplaint(ComplaintSearchDTO<String> dto) {
-        if(!StringUtils.hasLength(dto.getSearchKeyword())){
-            throw new AlertException(ResultCode.UPDATE_ERROR);
-        }
-        String likeKeyword = "%" + dto.getSearchKeyword() + "%";
+    public PageInfo<ComplaintListVo> searchComplaint(ComplaintListDTO dto) {
+        final String reason = StringUtils.hasLength(dto.getReason()) ? dto.getReason() + "%" : null;
+        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
+        final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
+
 
         SelectStatementProvider selectStatement = select(complaintMapper.selectList)
                 .from(ComplaintDynamicSqlSupport.complaint)
-                .where(ComplaintDynamicSqlSupport.complaintReason,isLike(likeKeyword))
+                .where(ComplaintDynamicSqlSupport.complaintReason,isLike(reason))
                 .build().render(RenderingStrategies.MYBATIS3);
 
         Page<Complaint> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<Complaint> complaints = complaintMapper.selectMany(selectStatement);
+        BeanCopier copier = BeanCopier.create(Complaint.class, ComplaintListVo.class, false);
 
-        return packing(complaints,dto.getPage(), queryPageData.getTotal());
+        List<ComplaintListVo> complaintListVos = complaints.stream().map(item ->{
+            ComplaintListVo complaintListVo = new ComplaintListVo();
+            copier.copy(item,complaintListVo,null);
+            Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId()))
+                    .and(NewsDynamicSqlSupport.title,isLikeWhenPresent(title)));
+            if (news.isPresent()) {
+                complaintListVo.setNewsContent(news.get().getContent());
+                complaintListVo.setNewsTitle(news.get().getTitle());
+            } else {
+                return null;
+            }
+            Optional<User> user = userMapper.selectOne(s -> s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getComplainerId()))
+                    .and(UserDynamicSqlSupport.username,isLikeWhenPresent(name)));
+            if (user.isPresent()) {
+                complaintListVo.setComplainerName(user.get().getUsername());
+            } else {
+                return null;
+            }
+            return complaintListVo;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+        PageInfo<ComplaintListVo> pageInfo = new PageInfo<>();
+        pageInfo.setPageData(complaintListVos);
+        pageInfo.setPage(dto.getPage());
+        pageInfo.setTotalSize(queryPageData.getTotal());
+        return pageInfo;
     }
 
     private PageInfo<Complaint> packing(List<Complaint> complaints,Integer page,long total){

@@ -16,7 +16,7 @@ public class UserRegisterDTO {
     @Length(min = 11,max = 11)
     private String tel;
 
-    @Length(min = 1, max = 16)
+    @Length(min = 3, max = 16)
     private String name;
 
     @Length(min = 6, max = 20)
