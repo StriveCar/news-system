@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiOperation;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import sun.jvm.hotspot.runtime.Bytes;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -93,7 +92,7 @@ public class NewsController {
                                                  @RequestParam("page") Integer page,
                                                  @Range(min = 1, max = 100)
                                                  @RequestParam("size") Integer size,
-                                                 @Range(min = CommonConstant.RESERVE_TO_BE_REVIEWED, max = CommonConstant.RESERVE_IS_TIME_OUT)
+                                                 @Range(min = 1, max = 4)
                                                  @RequestParam Byte status){
         return newsService.getNewsByPublishStatus(page,size,status);
     }
