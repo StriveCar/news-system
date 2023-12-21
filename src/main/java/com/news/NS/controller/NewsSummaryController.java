@@ -18,9 +18,8 @@ import java.util.List;
 
 @RestController
 @Slf4j
-@RequestMapping("/home")
 @ResponseBodyResult
-@Api(tags = "首页新闻")
+@Api(tags = "新闻概要")
 public class NewsSummaryController {
     @Autowired
     NewsSummaryService newsSummaryService;
