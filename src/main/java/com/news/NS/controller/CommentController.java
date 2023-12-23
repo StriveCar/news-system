@@ -1,6 +1,9 @@
 package com.news.NS.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
+import com.news.NS.common.CommonConstant;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.domain.dto.Comment.*;
@@ -92,11 +95,13 @@ public class CommentController {
 
     @PostMapping("/admin/first")
     @ApiOperation(value = "管理端返回一级评论列表")
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<CommentAdminVo> firstCommentsListAdminApi(@RequestBody @Valid CommentListAdminQueryDTO dto) {
         return commentService.queryFirstCommentAdminList(dto);
     }
     @PostMapping("/admin/second")
     @ApiOperation(value = "管理端返回二级评论列表")
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<CommentAdminVo> secondCommentsListAdminApi(@RequestBody @Valid CommentListAdminQueryDTO dto) {
         return commentService.querySecondCommentAdminList(dto);
     }

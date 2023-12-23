@@ -40,12 +40,6 @@ public class UserService {
     @Autowired
     private RedisCacheUtil<String> redisCacheUtil;
 
-    //
-//    @Autowired
-//    private UserRoleService userRoleService;
-//
-//    @Autowired
-//    private UserRoleMapper userRoleMapper;
     public Map<String, Object> login(UserLoginDTO userLoginDTO) {
         String pwd = SaSecureUtil.md5(userLoginDTO.getPwd());
         SelectStatementProvider queryStatement = select(UserMapper.selectList)
@@ -255,6 +249,10 @@ public class UserService {
         }
         Integer userIdContext = StpUtil.getSessionByLoginId(StpUtil.getLoginId()).getInt("userId");
         if (userIdContext.equals(userId)) {
+            throw new AlertException(ResultCode.OPERATE_OBJECT_NOT_SELF);
+        }
+        Byte adminrole = Byte.valueOf(StpUtil.getRoleList().get(0));
+        if (adminrole.intValue() <= identification.intValue()){
             throw new AlertException(ResultCode.OPERATE_OBJECT_NOT_SELF);
         }
         Optional<User> optionalUser = userMapper.selectByPrimaryKey(userId);

@@ -364,7 +364,7 @@ public class CommentService {
             vo.setParentCommentId(-1);
             return vo;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-
+        queryPage.setTotal(result.size());
         return generatePageInfo(queryPage, result);
     }
 
@@ -433,6 +433,7 @@ public class CommentService {
             return vo;
         }).filter(Objects::nonNull).collect(Collectors.toList());
 
+        queryPage.setTotal(result.size());
         return generatePageInfo(queryPage, result);
     }
 

@@ -55,7 +55,7 @@ public class NewsController {
 
     @GetMapping("/news/delete/{ids}")
     @ApiOperation(value = "删除新闻")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
+    @SaCheckRole(value = {CommonConstant.SUPER_ADMIN,CommonConstant.PULISHER},mode = SaMode.OR)
     public void deleteNews(@PathVariable("ids") String ids){
         newsService.delete(ids);
     }
@@ -66,7 +66,7 @@ public class NewsController {
         return newsService.getNewsById(newsGetDTO);
     }
 
-    @GetMapping("/news/get/by-publisher")
+    @PostMapping("/news/get/by-publisher")
     @ApiOperation(value = "根据作者id获取新闻")
     public PageInfo<News> getNewsByPublisherId(@Min(1)
                                                @RequestParam("page") Integer page,
@@ -76,7 +76,7 @@ public class NewsController {
         return newsService.getNewsByPublisherId(page,size,id);
     }
 
-    @GetMapping("/news/get/by-section")
+    @PostMapping("/news/get/by-section")
     @ApiOperation(value = "根据栏目id获取新闻")
     public PageInfo<News> getNewsBySectionId(@Min(1)
                                              @RequestParam("page") Integer page,
@@ -99,6 +99,7 @@ public class NewsController {
 
     @PostMapping("/news/list")
     @ApiOperation(value = "获取新闻列表")
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public PageInfo<NewsListVo> getNewsList(@RequestBody NewsListDTO newsListDTO){
         return newsService.getNewsList(newsListDTO);
     }

@@ -1,6 +1,9 @@
 package com.news.NS.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
+import com.news.NS.common.CommonConstant;
 import com.news.NS.common.ResponseBodyResult;
 import com.news.NS.common.domain.PageInfo;
 import com.news.NS.domain.User;
@@ -84,6 +87,7 @@ public class UserController {
 
     @PostMapping("/admin/update/role")
     @ApiOperation(value = "更改用户权限")
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public void changeRoleApi(@RequestBody UserRoleChangeDTO userRoleChangeDTO) {
         userService.changeUserRole(userRoleChangeDTO.getUserId(), userRoleChangeDTO.getIdentification());
     }
