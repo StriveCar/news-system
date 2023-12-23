@@ -26,6 +26,7 @@ public interface CommonConstant {
     Byte APPLICATION_NOTPASS = 1;//新闻编辑申请审核状态
     Byte APPLICATION_PASS = 2;//新闻编辑申请通过
     Byte APPLICATION_REFUSE = 3;//新闻编辑申请被拒绝
+    Byte APPLICATION_DELETE = 4;//新闻编辑申请删除
 
     Integer MAX_INFO_UPDATE_NUM = 1; // 最大个人信息修改次数，每24小时
 }

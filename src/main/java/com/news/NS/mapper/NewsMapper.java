@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
 
+import com.news.NS.domain.dto.News.NewsGetDTO;
 import com.news.NS.domain.vo.SectionNewsVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
@@ -228,4 +229,8 @@ public interface NewsMapper {
 
     @Select("select title,publisher_id,section_id,content from news where news_id=#{newsId}")
     News selectOneNews(Integer newsId);
+
+    @Select("select count(*) from user_focus where user_id =#{userId} and focused_user_id = #{focusedUserId}")
+    Integer judgeFocusByUserId(Integer userId, Integer focusedUserId);
+
 }

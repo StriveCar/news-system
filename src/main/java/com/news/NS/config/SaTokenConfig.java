@@ -23,16 +23,23 @@ public class SaTokenConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         // 下面的拦截器使权限和路由拦截器，和springboot内置的拦截器不同
         List<String> loginExcludePathPatterns = new ArrayList<>();
+        //登录
         loginExcludePathPatterns.add("/user/login");
-        loginExcludePathPatterns.add("/user/publicKey");
         loginExcludePathPatterns.add("/user/register");
-        loginExcludePathPatterns.add("/user/refreshToken");
         loginExcludePathPatterns.add("/user/logout");
-        loginExcludePathPatterns.add("/admin/login");
-        loginExcludePathPatterns.add("/user/update/pwd");
         loginExcludePathPatterns.add("/user/get/verifyCode");
-        loginExcludePathPatterns.add("/user/get/classify/room");
-        loginExcludePathPatterns.add("/config/get/by/**");
+        loginExcludePathPatterns.add("/user/modify/password");
+        loginExcludePathPatterns.add("/admin/login");
+        //栏目
+        loginExcludePathPatterns.add("/section/get/list");
+        //新闻
+        loginExcludePathPatterns.add("/news/search");
+        loginExcludePathPatterns.add("/news/get/by-id");
+        loginExcludePathPatterns.add("/news/get/by-section");
+        //评论
+        loginExcludePathPatterns.add("/comment");
+        loginExcludePathPatterns.add("/comment/first");
+        loginExcludePathPatterns.add("/comment/second");
         // swagger
         loginExcludePathPatterns.add("/v3/**");
         loginExcludePathPatterns.add("/swagger-ui/**");
@@ -42,8 +49,6 @@ public class SaTokenConfig implements WebMvcConfigurer {
         loginExcludePathPatterns.add("/doc.html");
         loginExcludePathPatterns.add("/error");
 
-        loginExcludePathPatterns.add("/comment/first");
-        loginExcludePathPatterns.add("/comment/second");
 
         loginExcludePathPatterns.add("/news/hot");
         loginExcludePathPatterns.add("/news/picturenews");

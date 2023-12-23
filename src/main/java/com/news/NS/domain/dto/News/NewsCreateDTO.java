@@ -1,4 +1,4 @@
-package com.news.NS.domain.dto;
+package com.news.NS.domain.dto.News;
 
 import lombok.Data;
 import lombok.NonNull;
@@ -14,6 +14,8 @@ public class NewsCreateDTO {
     private Integer publisherId;
     @NotNull
     private Integer sectionId;
+    @NotNull
     private String title;
+    @NotNull
     private String content;
 }

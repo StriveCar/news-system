@@ -11,14 +11,10 @@ import com.news.NS.service.SectionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.hibernate.validator.constraints.Range;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 
 @RestController
 @ResponseBodyResult
@@ -26,8 +22,11 @@ import java.util.List;
 @Validated
 public class SectionController {
 
-    @Autowired
-    private SectionService sectionService;
+    private final SectionService sectionService;
+
+    public SectionController(SectionService sectionService) {
+        this.sectionService = sectionService;
+    }
 
     @GetMapping("/section/get/list")
     @ApiOperation(value = "栏目列表")
@@ -49,6 +48,7 @@ public class SectionController {
     }
     @PostMapping("/section/add")
     @ApiOperation(value = "添加栏目")
+    @SaCheckRole(value = {CommonConstant.SUPER_ADMIN})
     public Section addSectionApi(@RequestParam("name") String sectionName) {
         return sectionService.addSection(sectionName);
     }

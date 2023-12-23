@@ -221,7 +221,7 @@ public interface UserMapper {
     @Select("select phone_number from user_info where phone_number = #{phoneNumber} and user_id != #{userId}")
     String isTelExisted(@Param("phoneNumber") String phoneNumber, @Param("userId") String userId);
 
-    @Select("SELECT username,sum(news_views) as viewsSum,sum(like_number) as likeSum ,sum(news_views+like_number) as sum FROM user_info JOIN news ON user_info.user_id = news.publisher_id GROUP BY news.publisher_id ORDER BY sum DESC LIMIT 7")
+    @Select("SELECT username,count(*) as newsCount,sum(news_views) as viewsSum,sum(like_number) as likeSum FROM user_info JOIN news ON user_info.user_id = news.publisher_id GROUP BY news.publisher_id ORDER BY viewsSum DESC LIMIT 7")
     List<PulisherDataVo> pulisherData();
 
     @Select("SELECT COUNT(*) AS count FROM user_info GROUP BY identification")
