@@ -66,13 +66,13 @@ public class NewsController {
         return newsService.getNewsById(id);
     }
 
-    @GetMapping("/news/get/by-publisher")
+    @PostMapping("/news/get/by-publisher")
     @ApiOperation(value = "根据作者id获取新闻")
     public PageInfo<News> getNewsByPublisherId(@RequestBody NewsSearchParamDTO<Integer> dto){
         return newsService.getNewsByPublisherId(dto);
     }
 
-    @GetMapping("/news/get/by-section")
+    @PostMapping("/news/get/by-section")
     @ApiOperation(value = "根据栏目id获取新闻")
     public PageInfo<News> getNewsBySectionId(@RequestBody NewsSearchParamDTO<Integer> dto){
         return newsService.getNewsBySectionId(dto);
