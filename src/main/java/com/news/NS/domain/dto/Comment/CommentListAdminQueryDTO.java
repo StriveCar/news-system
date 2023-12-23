@@ -14,5 +14,7 @@ public class CommentListAdminQueryDTO {
     @Range(min = 1, max = 100)
     private Integer size;
 
-    private Integer newsId;
+    private String content;
+//    private String name;
+    private String title;
 }
