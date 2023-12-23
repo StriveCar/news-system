@@ -27,7 +27,10 @@ import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
@@ -82,22 +85,22 @@ public class NewsService {
     public void delete(String ids) {
         System.out.println(ids);
         //传入的字符串含多个id，使用逗号分开
-        if(ids.charAt(ids.length()-1) != ','){
+        if (ids.charAt(ids.length() - 1) != ',') {
             ids = ids + ",";
         }
         String[] sts = ids.split(",");
         int res = 0;
         int[] id = new int[sts.length];
-        for (int i=0;i<id.length;i++) {
+        for (int i = 0; i < id.length; i++) {
             id[i] = Integer.parseInt(sts[i]);
         }
         //删除多个新闻
-        for (int i=0;i<id.length;i++) {
+        for (int i = 0; i < id.length; i++) {
             UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
                     .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.NEWS_DISABLE)
-                    .where(NewsDynamicSqlSupport.newsId,isEqualTo(id[i]))
+                    .where(NewsDynamicSqlSupport.newsId, isEqualTo(id[i]))
                     .build().render(RenderingStrategies.MYBATIS3);
-            if(newsMapper.update(updateStatement) == 0){
+            if (newsMapper.update(updateStatement) == 0) {
                 throw new AlertException(ResultCode.DELETE_ERROR);
             }
         }
@@ -126,14 +129,15 @@ public class NewsService {
         UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
                 .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.RESERVE_TO_BE_REVIEWED)
                 .set(NewsDynamicSqlSupport.publishTime).equalTo(timestamp)
-                .where(NewsDynamicSqlSupport.newsId,isEqualTo(newsId))
-                .and(NewsDynamicSqlSupport.publishStatus,isNotEqualTo(CommonConstant.NEWS_DISABLE))
+                .where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))
+                .and(NewsDynamicSqlSupport.publishStatus, isNotEqualTo(CommonConstant.NEWS_DISABLE))
                 .build().render(RenderingStrategies.MYBATIS3);
         int rows = newsMapper.update(updateStatement);
-        if(rows == 0){
+        if (rows == 0) {
             throw new AlertException(ResultCode.UPDATE_ERROR);
         }
     }
+
 
     public Map<String,Object> getNewsById(NewsGetDTO newsGetDTO){
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
@@ -147,7 +151,7 @@ public class NewsService {
                 throw new AlertException(500,"新闻已删除");
             }
         } else {
-            throw new AlertException(500,"新闻不存在");
+            throw new AlertException(500, "新闻不存在");
         }
 
         Map<String,Object> map = new HashMap<>();
@@ -178,10 +182,10 @@ public class NewsService {
         return map;
     }
 
-    public void updateViews(News news){
+    public void updateViews(News news) {
         UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
-                .set(NewsDynamicSqlSupport.newsViews).equalTo(news.getNewsViews()+1)
-                .where(NewsDynamicSqlSupport.newsId,isEqualTo(news.getNewsId()))
+                .set(NewsDynamicSqlSupport.newsViews).equalTo(news.getNewsViews() + 1)
+                .where(NewsDynamicSqlSupport.newsId, isEqualTo(news.getNewsId()))
                 .build().render(RenderingStrategies.MYBATIS3);
         newsMapper.update(updateStatement);
     }
@@ -234,9 +238,9 @@ public class NewsService {
         List<News> newsList = newsMapper.selectMany(selectStatement);
 
         BeanCopier newsCopier = BeanCopier.create(News.class, NewsListVo.class, false);
-        List<NewsListVo> newsListVos = newsList.stream().map(item->{
+        List<NewsListVo> newsListVos = newsList.stream().map(item -> {
             NewsListVo newsListVo = new NewsListVo();
-            newsCopier.copy(item,newsListVo,null);
+            newsCopier.copy(item, newsListVo, null);
             newsListVo.setPublisherName(userMapper.selectByPrimaryKey(item.getPublisherId()).get().getUsername());
             newsListVo.setSectionName(sectionMapper.selectByPrimaryKey(item.getSectionId()).get().getSectionName());
             return newsListVo;
@@ -248,13 +252,13 @@ public class NewsService {
         return pageInfo;
     }
 
-    private PageInfo<News> packing(List<News> news,Integer page,long total){
+    private PageInfo<News> packing(List<News> news, Integer page, long total) {
         /*
-        * 把多个News分页封装成Pageinfo然后返回
-        * news：News数据
-        * page：页数
-        * size：每页的数据量
-        * */
+         * 把多个News分页封装成Pageinfo然后返回
+         * news：News数据
+         * page：页数
+         * size：每页的数据量
+         * */
         PageInfo<News> pageInfo = new PageInfo<>();
         pageInfo.setPageData(news);
         pageInfo.setPage(page);
@@ -267,9 +271,9 @@ public class NewsService {
 
         SelectStatementProvider selectStatement = select(newsMapper.selectList)
                 .from(NewsDynamicSqlSupport.news)
-                .where(NewsDynamicSqlSupport.title,isLike(likeKeyword))
-                .or(NewsDynamicSqlSupport.content,isLike(likeKeyword))
-                .and(NewsDynamicSqlSupport.publishStatus,isNotEqualTo(CommonConstant.NEWS_DISABLE))
+                .where(NewsDynamicSqlSupport.title, isLike(likeKeyword))
+                .or(NewsDynamicSqlSupport.content, isLike(likeKeyword))
+                .and(NewsDynamicSqlSupport.publishStatus, isNotEqualTo(CommonConstant.NEWS_DISABLE))
                 .build().render(RenderingStrategies.MYBATIS3);
 
         Page<News> queryPageData = PageHelper.startPage(page, size);
@@ -287,6 +291,9 @@ public class NewsService {
         Page<News> queryPageData = PageHelper.startPage(page, size);
         List<News> news = newsMapper.selectMany(sqlStatement);
 
+
         return packing(news,page,queryPageData.getTotal());
     }
+
+
 }

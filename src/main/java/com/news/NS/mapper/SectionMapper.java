@@ -162,4 +162,6 @@ public interface SectionMapper {
         );
     }
 
+    @Select("select section_name from section where section_id=#{sectionId}")
+    String getNameById(Integer sectionId);
 }

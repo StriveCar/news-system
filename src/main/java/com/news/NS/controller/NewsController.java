@@ -14,10 +14,12 @@ import com.news.NS.domain.vo.NewsListVo;
 import com.news.NS.service.NewsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.hibernate.validator.constraints.Range;
+
+import io.swagger.annotations.ApiParam;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Map;
@@ -113,4 +115,6 @@ public class NewsController {
                                      @RequestParam String key){
         return newsService.searchNews(page,size,key);
     }
+
+
 }
