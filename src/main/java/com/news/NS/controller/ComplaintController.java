@@ -33,7 +33,7 @@ public class ComplaintController {
     }
     @GetMapping("/complaint/delete")
     @ApiOperation(value = "删除举报")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
+    @SaCheckRole(value = {CommonConstant.SUPER_ADMIN})
     public void deleteComplaint(@RequestBody ComplaintDeleteDTO dto){
         complaintService.deleteComplaint(dto);
     }

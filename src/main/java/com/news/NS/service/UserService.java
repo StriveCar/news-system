@@ -199,6 +199,9 @@ public class UserService {
             errorMsg += userUpdateDTO.getPhoneNumber() + "手机号已被使用,";
             throw new AlertException(1000, errorMsg);
         }
+        if (userMapper.count(c->c.where(UserDynamicSqlSupport.account, isEqualTo(userUpdateDTO.getAccount()))) > 0) {
+            throw new AlertException(1000, "账号" + userUpdateDTO.getAccount() + "已被注册");
+        }
         // 获取用户24小时可更新个人信息次数
         Integer leftUpdateTimes = redisCacheUtil.getCacheObject(userUpdateDTO.getUserId() + "updateInfo");
         if (leftUpdateTimes != null) {

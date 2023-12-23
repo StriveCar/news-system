@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @ResponseBodyResult
@@ -49,19 +50,20 @@ public class SectionController {
     @PostMapping("/section/add")
     @ApiOperation(value = "添加栏目")
     @SaCheckRole(value = {CommonConstant.SUPER_ADMIN})
-    public Section addSectionApi(@RequestParam("name") String sectionName) {
+    public Section addSectionApi(@NotNull @RequestParam("name") String sectionName) {
         return sectionService.addSection(sectionName);
     }
 
     @DeleteMapping("/section/del")
     @ApiOperation(value = "删除栏目")
     @SaCheckRole(value = {CommonConstant.SUPER_ADMIN})
-    public void delSectionApi(@RequestParam("id") Integer id) {
+    public void delSectionApi(@NotNull @RequestParam("id") Integer id) {
         sectionService.delSection(id);
     }
 
     @PostMapping("/section/update")
     @ApiOperation(value = "更新栏目")
+    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
     public void updateSysConfigApi(@RequestBody Section section) {
         sectionService.updateSection(section);
     }
