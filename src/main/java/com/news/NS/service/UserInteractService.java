@@ -16,10 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.mybatis.dynamic.sql.SqlBuilder.isEqualTo;
-import static org.mybatis.dynamic.sql.SqlBuilder.update;
+import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 
 @Service
@@ -38,13 +39,14 @@ public class UserInteractService {
     @Autowired
     SectionMapper sectionMapper;
 
-    public boolean addLikes(Integer newsId,Integer userId) {
+    public Map<String,Object> addLikes(Integer newsId,Integer userId) {
         //获取原点赞数
         Integer likeNumber = newsMapper.selectLikeNumber(newsId);
         //游客不能点赞
         if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0)
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
 
+        Map<String,Object> result=new HashMap<>();
         //查得到新闻数据就增加点赞数
         if (likeNumber != null) {
             UpdateStatementProvider updateStatementProvider = update(NewsDynamicSqlSupport.news)
@@ -53,51 +55,89 @@ public class UserInteractService {
                     .where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
-            newsMapper.update(updateStatementProvider);
-            return true;
+           if(newsMapper.update(updateStatementProvider) >= 0)
+               result.put("result","点赞成功");
+           else
+               result.put("result","点赞失败");
+
         } else {
-            return false;
+            result.put("result","新闻不存在");
         }
-
-
+        return result;
     }
 
-    public int addCollectInfo(Collect collect) {
+    public Map<String, Object> addCollectInfo(Collect collect) {
         Integer newsId = collect.getNewsId();
         Integer userId = collect.getUserId();
-        if (newsMapper.count(c -> c.where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))) <= 0) { // 数据库不存在该 newsId
+        if (newsMapper.count(c -> c.where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId)).and(NewsDynamicSqlSupport.publishStatus,isEqualTo((byte) 2))) <= 0) { // 数据库不存在该 newsId
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该新闻不存在");
-        } else if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0) {
+        }
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0) {
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该用户不存在");
-        } else if (collectMapper.count(c -> c.where(CollectDynamicSqlSupport.userId, isEqualTo(userId)).and(CollectDynamicSqlSupport.newsId, isEqualTo(newsId))) > 0) {
+        }
+
+        if (collectMapper.count(c -> c.where(CollectDynamicSqlSupport.userId, isEqualTo(userId)).and(CollectDynamicSqlSupport.newsId, isEqualTo(newsId))) > 0) {
             throw new AlertException(500, "该新闻已被该用户收藏");
-        } else return collectMapper.insert(collect);
+        }
+        Map<String,Object> result=new HashMap<>();
+        if (collectMapper.insert(collect)<0)
+            result.put("result","收藏成功");
+        else
+            result.put("result","收藏失败");
+
+        return result;
     }
 
-    public int deletCollectInfo(Collect collect) {
+    public Map<String, Object> deletCollectInfo(Collect collect) {
         Integer userId = collect.getUserId();
         Integer newsId = collect.getNewsId();
         if (collectMapper.count(c -> c.where(CollectDynamicSqlSupport.userId, isEqualTo(userId)).and(CollectDynamicSqlSupport.newsId, isEqualTo(newsId))) <= 0) {
             throw new AlertException(500, "用户不存在或新闻不存在或该新闻本来就没被收藏");
         }
+        Map<String,Object> result=new HashMap<>();
+        if(collectMapper.deleteByPrimaryKey(userId, newsId) >0 )
+            result.put("result","取消收藏成功");
+        else
+            result.put("result","取消收藏失败");
+        return result;
 
-        return collectMapper.deleteByPrimaryKey(userId, newsId);
 
 
     }
 
-    public int focusUser(UserFocusDTO userFocusDTO) {
+    public Map<String,Object> focusUser(UserFocusDTO userFocusDTO) {
         if (focusMapper.getOneFocusInfo(userFocusDTO) != null)
             throw new AlertException(500, "不能重复关注");
 
-        return focusMapper.focusUser(userFocusDTO);
+        if(userFocusDTO.getUserId() == userFocusDTO.getFocusedUserId())
+            throw new AlertException(500,"不能关注自己");
+
+        if(userMapper.count(c->c.where(UserDynamicSqlSupport.userId,isEqualTo(userFocusDTO.getUserId()))) <=0 ||
+                userMapper.count(d->d.where(UserDynamicSqlSupport.userId,isEqualTo(userFocusDTO.getFocusedUserId()))) <= 0)
+            throw new AlertException(500,"关注或被关注者不存在");
+
+        Map<String,Object> result=new HashMap<>();
+        if (focusMapper.focusUser(userFocusDTO)>0)
+            result.put("result","关注成功");
+        else
+            result.put("result","关注失败");
+
+        return  result;
     }
 
 
-    public int unfocusUser(UserFocusDTO userFocusDTO) {
+    public Map<String,Object> unfocusUser(UserFocusDTO userFocusDTO) {
         if (focusMapper.getOneFocusInfo(userFocusDTO) == null)
             throw new AlertException(500, "用户不存在或您本来就没有关注该用户");
-        return focusMapper.unfocusUser(userFocusDTO);
+
+        Map<String,Object> result=new HashMap<>();
+        if(focusMapper.unfocusUser(userFocusDTO)>0)
+            result.put("result","取消关注成功");
+        else
+            result.put("result","取消关注失败");
+
+        return result;
+
     }
 
     public List<FocusVo> getFocusList(Integer userId) {
