@@ -15,6 +15,8 @@ public class CommentListAdminQueryDTO {
     private Integer size;
 
     private String content;
-//    private String name;
+
+    private String publisherName;
+
     private String title;
 }
