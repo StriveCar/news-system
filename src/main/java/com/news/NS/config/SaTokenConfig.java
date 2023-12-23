@@ -49,7 +49,7 @@ public class SaTokenConfig implements WebMvcConfigurer {
         loginExcludePathPatterns.add("/doc.html");
         loginExcludePathPatterns.add("/error");
 
-
+        //新闻首页/栏目首页
         loginExcludePathPatterns.add("/news/hot");
         loginExcludePathPatterns.add("/news/picturenews");
         loginExcludePathPatterns.add("/news/summary");
