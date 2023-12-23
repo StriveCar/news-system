@@ -9,12 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @ToString
-public class NewsListDTO<T> {
-    /*
-     * 根据参数 param 查询符合条件的新闻
-     * param可以是 sectionId、publisherId、publishStatus等
-     * 类型可以是Integer、Byte、String等类型
-     */
+public class NewsListDTO {
     private Integer sectionId;
     private String content;
     private String title;

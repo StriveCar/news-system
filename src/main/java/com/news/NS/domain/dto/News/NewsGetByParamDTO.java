@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @ToString
-public class NewsSearchParamDTO<T> {
+public class NewsGetByParamDTO<T> {
     /*
      * 根据参数 param 查询符合条件的新闻
      * param可以是 sectionId、publisherId、publishStatus等

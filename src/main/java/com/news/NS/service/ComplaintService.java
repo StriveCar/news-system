@@ -68,7 +68,7 @@ public class ComplaintService {
     }
 
     public void deleteComplaint(ComplaintDeleteDTO dto) {
-        if(complaintMapper.deleteByPrimaryKey(dto.getComplaintId(),dto.getNewsId()) == 0) {
+        if(complaintMapper.deleteByPrimaryKey(dto.getComplainerId(),dto.getNewsId()) == 0) {
             throw new AlertException(ResultCode.DELETE_ERROR);
         }
     }
@@ -79,7 +79,8 @@ public class ComplaintService {
         }
         UpdateStatementProvider updateStatement = update(ComplaintDynamicSqlSupport.complaint)
                 .set(ComplaintDynamicSqlSupport.complaintReason).equalTo(dto.getReason())
-                .where(ComplaintDynamicSqlSupport.complainerId,isEqualTo(dto.getComplaintId()))
+                .where(ComplaintDynamicSqlSupport.complainerId,isEqualTo(dto.getComplainerId()))
+                .and(ComplaintDynamicSqlSupport.newsId,isEqualTo(dto.getNewsId()))
                 .build().render(RenderingStrategies.MYBATIS3);
         if(complaintMapper.update(updateStatement) != 1){
             throw new AlertException(ResultCode.UPDATE_ERROR);

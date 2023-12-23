@@ -8,7 +8,9 @@ import javax.validation.constraints.NotNull;
 @ToString
 public class ComplaintModifyDTO {
     @NotNull
-    private Integer complaintId;
+    private Integer complainerId;
+    @NotNull
+    private Integer newsId;
     @NotNull
     private String reason;
 }
