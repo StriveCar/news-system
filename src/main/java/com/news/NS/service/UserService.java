@@ -168,7 +168,11 @@ public class UserService {
 
         Page<User> queryDataPage = PageHelper.startPage(page, size);
         List<User> userList = userMapper.selectMany(queryStatement);
-        userList.forEach(user -> user.setPassword(null));
+        userList.forEach(user -> {
+            user.setPassword(null);
+            String tel = CommonUtils.encodeTel(user.getPhoneNumber());
+            user.setPhoneNumber(tel);
+        });
         PageInfo<User> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
         pageInfo.setPageData(userList);
