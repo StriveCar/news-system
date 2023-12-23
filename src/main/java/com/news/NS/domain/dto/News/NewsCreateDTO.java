@@ -1,4 +1,4 @@
-package com.news.NS.domain.dto;
+package com.news.NS.domain.dto.News;
 
 import lombok.Data;
 import lombok.NonNull;
