@@ -98,7 +98,6 @@ public class ComplaintService {
                 .where(ComplaintDynamicSqlSupport.complaintReason,isLike(reason))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<Complaint> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<Complaint> complaints = complaintMapper.selectMany(selectStatement);
         BeanCopier copier = BeanCopier.create(Complaint.class, ComplaintListVo.class, false);
 
@@ -122,10 +121,19 @@ public class ComplaintService {
             }
             return complaintListVo;
         }).filter(Objects::nonNull).collect(Collectors.toList());
+        int page = dto.getPage(); // 当前页码
+        int pageSize = dto.getSize(); // 每页大小
+
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, complaintListVos.size());
+
+        List<ComplaintListVo> paginatedList = complaintListVos.subList(startIndex, endIndex);
+
+
         PageInfo<ComplaintListVo> pageInfo = new PageInfo<>();
-        pageInfo.setPageData(complaintListVos);
+        pageInfo.setPageData(paginatedList);
         pageInfo.setPage(dto.getPage());
-        pageInfo.setTotalSize(queryPageData.getTotal());
+        pageInfo.setTotalSize((long)complaintListVos.size());
         return pageInfo;
     }
 
