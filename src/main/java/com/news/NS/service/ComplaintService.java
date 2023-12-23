@@ -139,7 +139,7 @@ public class ComplaintService {
 
     private PageInfo<Complaint> packing(List<Complaint> complaints,Integer page,long total){
         /*
-         * 把多个News分页封装成Pageinfo然后返回
+         * List封装成Pageinfo然后返回
          * Complaint：Complaint数据
          * page：页数
          * size：每页的数据量
