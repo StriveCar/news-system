@@ -18,6 +18,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @ResponseBodyResult
 @Api(tags = "举报模块")
@@ -28,33 +30,34 @@ public class ComplaintController {
     public ComplaintController(ComplaintService complaintService){this.complaintService = complaintService;}
     @PostMapping("/complaint/create")
     @ApiOperation(value = "添加举报")
-    public void addComplaint(@RequestBody ComplaintCreateDTO complaintCreateDTO){
+    public void addComplaint(@Valid @RequestBody ComplaintCreateDTO complaintCreateDTO){
         complaintService.addNewComplaint(complaintCreateDTO);
     }
-    @GetMapping("/complaint/delete")
+  
+    @PostMapping("/complaint/delete")
     @ApiOperation(value = "删除举报")
     @SaCheckRole(value = {CommonConstant.SUPER_ADMIN})
-    public void deleteComplaint(@RequestBody ComplaintDeleteDTO dto){
+    public void deleteComplaint(@Valid @RequestBody ComplaintDeleteDTO dto){
         complaintService.deleteComplaint(dto);
     }
 
     @PostMapping("/complaint/modify")
     @ApiOperation(value = "修改举报信息")
     @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
-    public void modifyComplaint(@RequestParam ComplaintModifyDTO dto){
+    public void modifyComplaint(@Valid @RequestBody ComplaintModifyDTO dto){
         complaintService.modifyComplaint(dto);
     }
 
-    @GetMapping("/complaint/search")
+    @PostMapping("/complaint/search")
     @ApiOperation(value = "查询举报")
     @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
-    public PageInfo<ComplaintListVo> searchComplaint(@RequestBody ComplaintListDTO dto){
+    public PageInfo<ComplaintListVo> searchComplaint(@Valid @RequestBody ComplaintListDTO dto){
         return complaintService.searchComplaint(dto);
     }
 
-    @GetMapping("/complaint/get/by-complainer")
+    @PostMapping("/complaint/get/by-complainer")
     @ApiOperation(value = "根据举报人获取举报")
-    public PageInfo<Complaint> getByComplainerId(@RequestParam ComplaintSearchDTO<Integer> dto){
+    public PageInfo<Complaint> getByComplainerId(@Valid @RequestBody ComplaintSearchDTO<Integer> dto){
         return complaintService.getByComplainerId(dto);
     }
 }

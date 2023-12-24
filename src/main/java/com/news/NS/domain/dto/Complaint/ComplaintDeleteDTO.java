@@ -11,5 +11,5 @@ public class ComplaintDeleteDTO {
     @NotNull
     private Integer newsId;
     @NotNull
-    private Integer complaintId;
+    private Integer complainerId;
 }
