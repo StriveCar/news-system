@@ -57,4 +57,11 @@ public class DataStatisticsController {
     public Map<String, Object> getSectionData() {
         return dataStatisticsService.getSectionData();
     }
+
+    @GetMapping("/admin/get/status/count")
+    @ApiOperation(value = "获取新闻处理信息")
+    @SaCheckRole(value = {CommonConstant.ADMIN, CommonConstant.SUPER_ADMIN}, mode = SaMode.OR)
+    public Map<String, Object> getNewsStatusData() {
+        return dataStatisticsService.getNewsStatusData();
+    }
 }

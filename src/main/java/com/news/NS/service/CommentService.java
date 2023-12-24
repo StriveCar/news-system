@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Date;
@@ -112,9 +113,11 @@ public class CommentService {
         return generatePageInfo(queryPage, voList);
     }
 
+
     /**
      * 添加一级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void addFirstComment(FirstCommentUpdateDTO dto) {
         Integer newsId = dto.getNewsId();
         Integer publisherId = dto.getPublisherId();
@@ -141,6 +144,7 @@ public class CommentService {
     /**
      * 删除一级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void deleteFirstComment(Integer commentId) {
         if (firstCommentMapper.delete(c -> c.where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId))) == 0) {
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该评论不存在");
@@ -153,6 +157,7 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void likeFirstComment(Integer commentId) {
         Optional<FirstComment> comment = firstCommentMapper.selectOne(c -> c.where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
@@ -220,6 +225,7 @@ public class CommentService {
     /**
      * 添加二级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void addSecondComment(SecondCommentUpdateDTO dto) {
         Integer firstCommentId = dto.getCommentId();
         Integer publisherId = dto.getPublisherId();
@@ -248,6 +254,7 @@ public class CommentService {
     /**
      * 删除二级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void deleteSecondComment(Integer commentId) {
         if (secondCommentMapper.delete(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId))) == 0) {
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该评论不存在");
@@ -258,6 +265,7 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void likeSecondComment(Integer commentId) {
         Optional<SecondComment> comment = secondCommentMapper.selectOne(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
@@ -369,7 +377,7 @@ public class CommentService {
                     return null;
                 }
             }
-            if (publisherName!= null) {
+            if (publisherName != null) {
                 Optional<User> user = userMapper.selectOne(s ->
                         s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
                                 .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
@@ -429,7 +437,7 @@ public class CommentService {
         QueryExpressionDSL<SelectModel> statement = select(SecondCommentMapper.selectList)
                 .from(SecondCommentDynamicSqlSupport.secondComment);
 
-        if (content != null ) {
+        if (content != null) {
             statement.where(SecondCommentDynamicSqlSupport.content, isLikeWhenPresent(content));
         }
         SelectStatementProvider secondStatement = statement

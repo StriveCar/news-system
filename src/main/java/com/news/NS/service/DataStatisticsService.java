@@ -1,6 +1,7 @@
 package com.news.NS.service;
 
 import com.news.NS.common.CommonConstant;
+import com.news.NS.domain.vo.NewsStatusVo;
 import com.news.NS.domain.vo.PulisherDataVo;
 import com.news.NS.domain.vo.SectionNewsVo;
 import com.news.NS.mapper.*;
@@ -9,6 +10,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,6 +115,28 @@ public class DataStatisticsService {
         map.put("viewsSum",viewsSum);
         map.put("likeSum",likeSum);
         map.put("newsCount",newsCount);
+        return map;
+    }
+
+    public Map<String, Object> getNewsStatusData(){
+        Map<Integer, String> statusMapping = new HashMap<>();
+        statusMapping.put(1, "未发布");
+        statusMapping.put(2, "已发布");
+        statusMapping.put(3, "取消发布");
+        statusMapping.put(4, "禁用");
+
+        List<NewsStatusVo> newsStatusVos = newsMapper.selectStatusData();
+        List<Integer> count = new ArrayList<>();
+        Map<String, Object> map = new HashMap<>();
+        List<String> statusList = new ArrayList<>();
+        for (NewsStatusVo status : newsStatusVos) {
+            int publishStatus = status.getPublishStatus();
+            String chineseStatus = statusMapping.getOrDefault(publishStatus, "未知状态");
+            statusList.add(chineseStatus);
+            count.add(status.getCount());
+        }
+        map.put("status",statusList);
+        map.put("count",count);
         return map;
     }
 }

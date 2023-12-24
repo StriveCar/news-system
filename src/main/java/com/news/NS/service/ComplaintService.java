@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
@@ -44,6 +45,7 @@ public class ComplaintService {
         this.newsMapper = newsMapper;
         this.userMapper = userMapper;
     }
+    @Transactional(rollbackFor = RuntimeException.class)
     public void addNewComplaint(ComplaintCreateDTO complaintCreateDTO) {
         Complaint temp = new Complaint();
         //检查用户是否存在。
@@ -67,19 +69,22 @@ public class ComplaintService {
         complaintMapper.insert(temp);
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void deleteComplaint(ComplaintDeleteDTO dto) {
-        if(complaintMapper.deleteByPrimaryKey(dto.getComplaintId(),dto.getNewsId()) == 0) {
+        if(complaintMapper.deleteByPrimaryKey(dto.getComplainerId(),dto.getNewsId()) == 0) {
             throw new AlertException(ResultCode.DELETE_ERROR);
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void modifyComplaint(ComplaintModifyDTO dto) {
         if(!StringUtils.hasLength(dto.getReason())){
             throw new AlertException(ResultCode.PARAM_IS_BLANK);
         }
         UpdateStatementProvider updateStatement = update(ComplaintDynamicSqlSupport.complaint)
                 .set(ComplaintDynamicSqlSupport.complaintReason).equalTo(dto.getReason())
-                .where(ComplaintDynamicSqlSupport.complainerId,isEqualTo(dto.getComplaintId()))
+                .where(ComplaintDynamicSqlSupport.complainerId,isEqualTo(dto.getComplainerId()))
+                .and(ComplaintDynamicSqlSupport.newsId,isEqualTo(dto.getNewsId()))
                 .build().render(RenderingStrategies.MYBATIS3);
         if(complaintMapper.update(updateStatement) != 1){
             throw new AlertException(ResultCode.UPDATE_ERROR);
@@ -97,7 +102,6 @@ public class ComplaintService {
                 .where(ComplaintDynamicSqlSupport.complaintReason,isLike(reason))
                 .build().render(RenderingStrategies.MYBATIS3);
 
-        Page<Complaint> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<Complaint> complaints = complaintMapper.selectMany(selectStatement);
         BeanCopier copier = BeanCopier.create(Complaint.class, ComplaintListVo.class, false);
 
@@ -121,16 +125,25 @@ public class ComplaintService {
             }
             return complaintListVo;
         }).filter(Objects::nonNull).collect(Collectors.toList());
+        int page = dto.getPage(); // 当前页码
+        int pageSize = dto.getSize(); // 每页大小
+
+        int startIndex = (page - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, complaintListVos.size());
+
+        List<ComplaintListVo> paginatedList = complaintListVos.subList(startIndex, endIndex);
+
+
         PageInfo<ComplaintListVo> pageInfo = new PageInfo<>();
-        pageInfo.setPageData(complaintListVos);
+        pageInfo.setPageData(paginatedList);
         pageInfo.setPage(dto.getPage());
-        pageInfo.setTotalSize(queryPageData.getTotal());
+        pageInfo.setTotalSize((long)complaintListVos.size());
         return pageInfo;
     }
 
     private PageInfo<Complaint> packing(List<Complaint> complaints,Integer page,long total){
         /*
-         * 把多个News分页封装成Pageinfo然后返回
+         * List封装成Pageinfo然后返回
          * Complaint：Complaint数据
          * page：页数
          * size：每页的数据量
