@@ -18,6 +18,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class SectionService {
     @Autowired
     private NewsMapper newsMapper;
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Section addSection(String sectionName) {
         if (!StringUtils.hasLength(sectionName)){
             throw new AlertException(ResultCode.PARAM_IS_INVALID);
@@ -60,6 +62,7 @@ public class SectionService {
         return section;
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void delSection(Integer sectionId) {
         Optional<Section> optionalSection = sectionMapper.selectByPrimaryKey(sectionId);
         if (optionalSection.isPresent()) {
@@ -71,6 +74,7 @@ public class SectionService {
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void updateSection(Section section) {
         if (sectionMapper.updateByPrimaryKeySelective(section) == 0) {
             throw new AlertException(ResultCode.SYSTEM_ERROR);

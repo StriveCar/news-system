@@ -11,6 +11,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.HashMap;
@@ -27,6 +28,7 @@ public class NoticeService {
     @Autowired
     UserMapper userMapper;
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String,Object> addNotice(Notification notification) {
         Integer userId=notification.getUserId();
         if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0)
@@ -35,7 +37,7 @@ public class NoticeService {
         if(!StringUtils.hasLength(notification.getContent()))
             throw new AlertException(ResultCode.PARAM_NOT_COMPLETE.code(),"通知内容不能为空！");
         //新发的通知，默认为未读
-        notification.setHasRead(new Byte((byte) 0));
+        notification.setHasRead((byte) 0);
 
         if (notificationMapper.insert(notification) > 0){
             Map<String,Object> result=new HashMap<>();
@@ -47,6 +49,7 @@ public class NoticeService {
 
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String,Object> updateReadState(Integer notificationId){
 
         if (notificationMapper.count(c -> c.where(NotificationDynamicSqlSupport.notificationId, isEqualTo(notificationId))) <= 0)
@@ -109,6 +112,7 @@ public class NoticeService {
 
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String,Object> deleteNotice(Integer notificationId) {
 
         if (notificationMapper.count(c -> c.where(NotificationDynamicSqlSupport.notificationId, isEqualTo(notificationId))) <= 0)

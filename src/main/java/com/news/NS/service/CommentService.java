@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Date;
@@ -112,9 +113,11 @@ public class CommentService {
         return generatePageInfo(queryPage, voList);
     }
 
+
     /**
      * 添加一级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void addFirstComment(FirstCommentUpdateDTO dto) {
         Integer newsId = dto.getNewsId();
         Integer publisherId = dto.getPublisherId();
@@ -141,6 +144,7 @@ public class CommentService {
     /**
      * 删除一级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void deleteFirstComment(Integer commentId) {
         if (firstCommentMapper.delete(c -> c.where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId))) == 0) {
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该评论不存在");
@@ -153,6 +157,7 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void likeFirstComment(Integer commentId) {
         Optional<FirstComment> comment = firstCommentMapper.selectOne(c -> c.where(FirstCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
@@ -220,6 +225,7 @@ public class CommentService {
     /**
      * 添加二级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void addSecondComment(SecondCommentUpdateDTO dto) {
         Integer firstCommentId = dto.getCommentId();
         Integer publisherId = dto.getPublisherId();
@@ -248,6 +254,7 @@ public class CommentService {
     /**
      * 删除二级评论
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void deleteSecondComment(Integer commentId) {
         if (secondCommentMapper.delete(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId))) == 0) {
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该评论不存在");
@@ -258,6 +265,7 @@ public class CommentService {
     /**
      * 点赞一级评论，评论数+1
      */
+    @Transactional(rollbackFor = RuntimeException.class)
     public void likeSecondComment(Integer commentId) {
         Optional<SecondComment> comment = secondCommentMapper.selectOne(c -> c.where(SecondCommentDynamicSqlSupport.commentId, isEqualTo(commentId)));
         if (comment.isPresent()) {
@@ -336,12 +344,12 @@ public class CommentService {
 //        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
         final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 
-        final String publisherName = StringUtils.hasLength(dto.getPublisherName())? dto.getPublisherName() + "%" : null;
+        final String publisherName = StringUtils.hasLength(dto.getPublisherName()) ? dto.getPublisherName() + "%" : null;
 
         QueryExpressionDSL<SelectModel> statement = select(FirstCommentMapper.selectList)
-               .from(FirstCommentDynamicSqlSupport.firstComment);
+                .from(FirstCommentDynamicSqlSupport.firstComment);
 
-        if (content != null ) {
+        if (content != null) {
             statement.where(FirstCommentDynamicSqlSupport.content, isLikeWhenPresent(content));
         }
         SelectStatementProvider firstStatement = statement
@@ -361,7 +369,7 @@ public class CommentService {
 
             if (title != null) {
                 Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId()))
-                        .and(NewsDynamicSqlSupport.title,isLikeWhenPresent(title)));
+                        .and(NewsDynamicSqlSupport.title, isLikeWhenPresent(title)));
                 if (news.isPresent()) {
                     vo.setNewsContent(news.get().getContent());
                     vo.setNewsTitle(news.get().getTitle());
@@ -369,7 +377,7 @@ public class CommentService {
                     return null;
                 }
             }
-            if (publisherName!= null) {
+            if (publisherName != null) {
                 Optional<User> user = userMapper.selectOne(s ->
                         s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
                                 .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
@@ -387,14 +395,14 @@ public class CommentService {
 
         PageInfo<CommentAdminVo> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
-        int startPosition = page * size;
+        int startPosition = (page - 1) * size;
         if (startPosition >= result.size()) {
             pageInfo.setPageData(Collections.emptyList());
             pageInfo.setTotalSize(0L);
             return pageInfo;
         }
         int endPosition = Math.min(startPosition + size, result.size());
-        final List<CommentAdminVo> pageList = result.subList(page * size,endPosition);
+        final List<CommentAdminVo> pageList = result.subList(page * size, endPosition);
         pageInfo.setPageData(pageList);
         pageInfo.setTotalSize((long) pageList.size());
         return pageInfo;
@@ -402,7 +410,7 @@ public class CommentService {
 
     /**
      * 返回管理端所需要的所有二级评论
-     *
+     * <p>
      * 不支持根据新闻id查找
      */
     public PageInfo<CommentAdminVo> querySecondCommentAdminList(CommentListAdminQueryDTO dto) {
@@ -412,7 +420,7 @@ public class CommentService {
 //        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
         final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 
-        final String publisherName = StringUtils.hasLength(dto.getPublisherName())? dto.getPublisherName() + "%": null;
+        final String publisherName = StringUtils.hasLength(dto.getPublisherName()) ? dto.getPublisherName() + "%" : null;
 //        Integer newsId = dto.getNewsId();
 
 //        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(FirstCommentMapper.selectList)
@@ -429,7 +437,7 @@ public class CommentService {
         QueryExpressionDSL<SelectModel> statement = select(SecondCommentMapper.selectList)
                 .from(SecondCommentDynamicSqlSupport.secondComment);
 
-        if (content != null ) {
+        if (content != null) {
             statement.where(SecondCommentDynamicSqlSupport.content, isLikeWhenPresent(content));
         }
         SelectStatementProvider secondStatement = statement
@@ -482,14 +490,14 @@ public class CommentService {
         // 分页处理
         PageInfo<CommentAdminVo> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
-        int startPosition = page * size;
+        int startPosition = (page - 1) * size;
         if (startPosition >= result.size()) {
             pageInfo.setPageData(Collections.emptyList());
             pageInfo.setTotalSize(0L);
             return pageInfo;
         }
         int endPosition = Math.min(startPosition + size, result.size());
-        final List<CommentAdminVo> pageList = result.subList(page * size,endPosition);
+        final List<CommentAdminVo> pageList = result.subList(page * size, endPosition);
         pageInfo.setPageData(pageList);
         pageInfo.setTotalSize((long) pageList.size());
         return pageInfo;

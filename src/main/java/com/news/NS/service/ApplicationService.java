@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
@@ -50,6 +51,7 @@ public class ApplicationService {
         this.userMapper = userMapper;
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void addApplication(ApplicationCreateDTO applicationCreateDTO) {
         Integer userId = applicationCreateDTO.getUserId();
         String reason = applicationCreateDTO.getReason();
@@ -68,12 +70,14 @@ public class ApplicationService {
         applicationMapper.insert(application);
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void delApplication(Integer userId) {
         if (applicationMapper.deleteByPrimaryKey(userId) == 0) {
             throw new AlertException(ResultCode.DELETE_ERROR);
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void updateApplication(ApplicationCreateDTO applicationCreateDTO) {
         Integer userId = applicationCreateDTO.getUserId();
         String reason = applicationCreateDTO.getReason();
@@ -157,9 +161,10 @@ public class ApplicationService {
         return map;
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void passApplication(Integer userId, boolean pass, String remark) {
         if (!StringUtils.hasLength(remark)) {
-            remark = "";
+            remark = "无";
         }
         Optional<Application> applicationOptional = applicationMapper.selectByPrimaryKey(userId);
         Optional<User> userOptional = userMapper.selectByPrimaryKey(userId);
@@ -167,6 +172,11 @@ public class ApplicationService {
             Application application=applicationOptional.get();
             if (pass){
                 application.setApplicationStatus(CommonConstant.APPLICATION_PASS);
+                User user = userOptional.get();
+                if (user.getIdentification().equals(CommonConstant.USER_ROLE)){
+                    user.setIdentification(CommonConstant.PULISHER_ROLE);
+                    userMapper.updateByPrimaryKey(user);
+                }
             }else{
                 application.setApplicationStatus(CommonConstant.APPLICATION_REFUSE);
             }

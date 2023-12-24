@@ -14,6 +14,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,6 +40,7 @@ public class UserInteractService {
     @Autowired
     SectionMapper sectionMapper;
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String,Object> addLikes(Integer newsId,Integer userId) {
         //获取原点赞数
         Integer likeNumber = newsMapper.selectLikeNumber(newsId);
@@ -66,6 +68,7 @@ public class UserInteractService {
         return result;
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String, Object> addCollectInfo(Collect collect) {
         Integer newsId = collect.getNewsId();
         Integer userId = collect.getUserId();
@@ -88,6 +91,7 @@ public class UserInteractService {
         return result;
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String, Object> deletCollectInfo(Collect collect) {
         Integer userId = collect.getUserId();
         Integer newsId = collect.getNewsId();
@@ -105,6 +109,7 @@ public class UserInteractService {
 
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String,Object> focusUser(UserFocusDTO userFocusDTO) {
         if (focusMapper.getOneFocusInfo(userFocusDTO) != null)
             throw new AlertException(500, "不能重复关注");
@@ -126,6 +131,7 @@ public class UserInteractService {
     }
 
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String,Object> unfocusUser(UserFocusDTO userFocusDTO) {
         if (focusMapper.getOneFocusInfo(userFocusDTO) == null)
             throw new AlertException(500, "用户不存在或您本来就没有关注该用户");

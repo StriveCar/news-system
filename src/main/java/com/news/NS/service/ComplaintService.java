@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
@@ -44,6 +45,7 @@ public class ComplaintService {
         this.newsMapper = newsMapper;
         this.userMapper = userMapper;
     }
+    @Transactional(rollbackFor = RuntimeException.class)
     public void addNewComplaint(ComplaintCreateDTO complaintCreateDTO) {
         Complaint temp = new Complaint();
         //检查用户是否存在。
@@ -67,12 +69,14 @@ public class ComplaintService {
         complaintMapper.insert(temp);
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void deleteComplaint(ComplaintDeleteDTO dto) {
         if(complaintMapper.deleteByPrimaryKey(dto.getComplainerId(),dto.getNewsId()) == 0) {
             throw new AlertException(ResultCode.DELETE_ERROR);
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void modifyComplaint(ComplaintModifyDTO dto) {
         if(!StringUtils.hasLength(dto.getReason())){
             throw new AlertException(ResultCode.PARAM_IS_BLANK);

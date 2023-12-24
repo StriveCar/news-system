@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 
@@ -53,6 +54,7 @@ public class NewsService {
         this.collectMapper = collectMapper;
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void create(NewsCreateDTO newsDTO) {
         News temp = new News();
         //用户身份校验
@@ -84,6 +86,7 @@ public class NewsService {
         newsMapper.insert(temp);
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void delete(String ids) {
         System.out.println(ids);
         //传入的字符串含多个id，使用逗号分开
@@ -108,6 +111,7 @@ public class NewsService {
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void modifyNews(News news) {
         if(!StringUtils.hasLength(news.getTitle()) || !StringUtils.hasLength(news.getContent())){
             throw new AlertException(ResultCode.PARAM_IS_BLANK);
@@ -120,6 +124,7 @@ public class NewsService {
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void publish(Integer newsId) {
         LocalDateTime currentTime = LocalDateTime.now();
         Timestamp timestamp = Timestamp.valueOf(currentTime);
@@ -186,6 +191,7 @@ public class NewsService {
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void updateViews(News news) {
         UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
                 .set(NewsDynamicSqlSupport.newsViews).equalTo(news.getNewsViews() + 1)
@@ -302,7 +308,7 @@ public class NewsService {
         Page<News> queryPageData = PageHelper.startPage(dto.getPage(), dto.getSize());
         List<News> news = newsMapper.selectMany(sqlStatement);
 
-        return packing(news,page,queryPageData.getTotal());
+        return packing(news,dto.getPage(),queryPageData.getTotal());
     }
 
 

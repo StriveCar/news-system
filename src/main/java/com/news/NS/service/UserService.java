@@ -62,6 +62,7 @@ public class UserService {
         return map;
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public Map<String, Object> register(UserRegisterDTO userRegisterDTO) {
         SelectStatementProvider statement = select(count())
                 .from(UserDynamicSqlSupport.user)
@@ -279,6 +280,7 @@ public class UserService {
         }
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
     public void updateUserPassword(UserUpdatePwdDTO userUpdatePwdDTO) {
         String newPwd = userUpdatePwdDTO.getNewPwd();
         String code = redisCacheUtil.getCacheObject(userUpdatePwdDTO.getTel());
