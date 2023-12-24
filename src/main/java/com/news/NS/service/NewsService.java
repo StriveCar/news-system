@@ -137,7 +137,7 @@ public class NewsService {
             }
         }
         UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
-                .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.NEWS_NOTISSUE)
+                .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.NEWS_ISSUE)
                 .set(NewsDynamicSqlSupport.publishTime).equalTo(timestamp)
                 .where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))
                 .and(NewsDynamicSqlSupport.publishStatus, isNotEqualTo(CommonConstant.NEWS_DISABLE))
