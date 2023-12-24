@@ -57,10 +57,12 @@ public class SaTokenConfig implements WebMvcConfigurer {
 
         // 注解权限拦截!!!!!
         registry.addInterceptor(new SaAnnotationInterceptor()).addPathPatterns("/**");
+
         // 登录拦截器！！！！！！
         registry.addInterceptor(new SaRouteInterceptor())
                 .addPathPatterns("/**")
                 .excludePathPatterns(loginExcludePathPatterns);
+
     }
 
     /**

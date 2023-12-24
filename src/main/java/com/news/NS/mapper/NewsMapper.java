@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.annotation.Generated;
 
 import com.news.NS.domain.dto.News.NewsGetDTO;
+import com.news.NS.domain.vo.NewsStatusVo;
 import com.news.NS.domain.vo.SectionNewsVo;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
@@ -223,6 +224,9 @@ public interface NewsMapper {
 
     @Select("select sum(news_views) as viewsSum,sum(like_number) as likeSum from news")
     Integer selectData();
+
+    @Select("SELECT publish_status, COUNT(*) AS count FROM news GROUP BY publish_status ORDER BY publish_status;")
+    List<NewsStatusVo> selectStatusData();
 
     @Select("select like_number from news where news_id=#{newsId}")
     Integer selectLikeNumber(Integer newsId);
