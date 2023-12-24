@@ -11,6 +11,5 @@ import javax.validation.constraints.NotNull;
 public class NewsGetDTO {
     @NotNull
     private Integer newsId;
-    @NotNull
     private Integer userId;
 }

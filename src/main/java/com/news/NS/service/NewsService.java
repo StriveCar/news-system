@@ -167,7 +167,7 @@ public class NewsService {
             Optional<User> optional1 = userMapper.selectByPrimaryKey(news.getPublisherId());
             if(optional1.isPresent()){
                 User user = optional1.get();
-                map.put("username",user.getUsername());
+                map.put("publisherName",user.getUsername());
                 map.put("avatar_url",user.getAvatarUrl());
             } else {
                 throw new AlertException(ResultCode.USER_NOT_EXIST);
