@@ -132,12 +132,13 @@ public class NewsService {
         if(optional.isEmpty()){
             throw new AlertException(500,"新闻不存在");
         } else {
-            if(!(optional.get().getPublishStatus().equals(CommonConstant.NEWS_NOTISSUE))) {
+            Byte status = optional.get().getPublishStatus();
+            if(!(status.equals(CommonConstant.NEWS_NOTISSUE) || status.equals(CommonConstant.NEWS_REVIEW_REJECT) || status.equals(CommonConstant.NEWS_CANCEL_ISSUE))) {
                 throw new AlertException(ResultCode.ILLEGAL_OPERATION);
             }
         }
         UpdateStatementProvider updateStatement = update(NewsDynamicSqlSupport.news)
-                .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.NEWS_ISSUE)
+                .set(NewsDynamicSqlSupport.publishStatus).equalTo(CommonConstant.NEWS_REVIEWING)
                 .set(NewsDynamicSqlSupport.publishTime).equalTo(timestamp)
                 .where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId))
                 .and(NewsDynamicSqlSupport.publishStatus, isNotEqualTo(CommonConstant.NEWS_DISABLE))
@@ -296,8 +297,8 @@ public class NewsService {
     }
 
     public PageInfo<News> getNewsByPublishStatus(NewsGetByParamDTO<Byte> dto) {
-        if(dto.getParam().compareTo(CommonConstant.NEWS_NOTISSUE) < 0 || dto.getParam().compareTo(CommonConstant.NEWS_DISABLE) > 0){
-            //新闻状态1-4
+        if(dto.getParam().compareTo(CommonConstant.NEWS_NOTISSUE) < 0 || dto.getParam().compareTo(CommonConstant.NEWS_REVIEW_REJECT) > 0){
+            //新闻状态1-6
             throw new AlertException(ResultCode.PARAM_IS_ILLEGAL);
         }
         SelectStatementProvider sqlStatement = select(newsMapper.selectList)
