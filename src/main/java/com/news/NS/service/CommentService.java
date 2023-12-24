@@ -387,14 +387,14 @@ public class CommentService {
 
         PageInfo<CommentAdminVo> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
-        int startPosition = page * size;
+        int startPosition = (page - 1) * size;
         if (startPosition >= result.size()) {
             pageInfo.setPageData(Collections.emptyList());
             pageInfo.setTotalSize(0L);
             return pageInfo;
         }
         int endPosition = Math.min(startPosition + size, result.size());
-        final List<CommentAdminVo> pageList = result.subList(page * size,endPosition);
+        final List<CommentAdminVo> pageList = result.subList(startPosition, endPosition);
         pageInfo.setPageData(pageList);
         pageInfo.setTotalSize((long) pageList.size());
         return pageInfo;
@@ -482,14 +482,14 @@ public class CommentService {
         // 分页处理
         PageInfo<CommentAdminVo> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
-        int startPosition = page * size;
+        int startPosition = (page - 1) * size;
         if (startPosition >= result.size()) {
             pageInfo.setPageData(Collections.emptyList());
             pageInfo.setTotalSize(0L);
             return pageInfo;
         }
         int endPosition = Math.min(startPosition + size, result.size());
-        final List<CommentAdminVo> pageList = result.subList(page * size,endPosition);
+        final List<CommentAdminVo> pageList = result.subList(startPosition, endPosition);
         pageInfo.setPageData(pageList);
         pageInfo.setTotalSize((long) pageList.size());
         return pageInfo;
