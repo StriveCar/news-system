@@ -81,28 +81,10 @@ public class CommonUtils {
         return str;
     }
 
-    public static boolean isJson(String jsonStr) {
-        try {
-            JSONObject json = JSONObject.parseObject(jsonStr);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 
     // 加密手机号中间四位
     public static String encodeTel(String tel) {
         return tel.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
-    }
-
-    public static String encodeName(String name) {
-        if (name.length() == 2) {
-            return name.replaceFirst(name.substring(1), "*");
-        }
-        if (name.length() > 2) {
-            return name.replaceFirst(name.substring(1, name.length() - 1), "*");
-        }
-        return name;
     }
 
     // 获取起始日期的00:00，获取结束日期的11:59:59
@@ -134,6 +116,7 @@ public class CommonUtils {
         return new Long[]{webAppDateStart, webAppDateEnd};
     }
 
+    //发送短信
     public static Boolean send(String phone,String key){
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou",
                 "LTAI5tBHMA1kKhhrdJzAy6jq","wBXkNBsmZYbKl3gvib0A9LC2C9CVrH");

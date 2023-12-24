@@ -17,12 +17,6 @@ public interface CommonConstant {
     Byte NEWS_CANCEL_ISSUE = 3;//新闻取消发布状态
     Byte NEWS_DISABLE = 4;//新闻禁用状态
 
-    Byte RESERVE_TO_BE_REVIEWED = 1;// 新闻待审批状态
-    Byte RESERVE_ALREADY_REVIEWED = 2;// 新闻审批通过状态
-    Byte RESERVE_CANCELED = 3; // 新闻审批取消状态
-    Byte RESERVE_TO_BE_REJECTED = 4; // 新闻审批被驳回
-    Byte RESERVE_IS_TIME_OUT = 5; // 新闻审批超过时间未处理
-
     Byte APPLICATION_NOTPASS = 1;//新闻编辑申请审核状态
     Byte APPLICATION_PASS = 2;//新闻编辑申请通过
     Byte APPLICATION_REFUSE = 3;//新闻编辑申请被拒绝

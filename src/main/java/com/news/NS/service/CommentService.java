@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.sql.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -335,13 +336,19 @@ public class CommentService {
 //        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
         final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 
-        SelectStatementProvider firstStatement = select(FirstCommentMapper.selectList)
-                .from(FirstCommentDynamicSqlSupport.firstComment)
-                .where(FirstCommentDynamicSqlSupport.content,isLikeWhenPresent(content))
+        final String publisherName = StringUtils.hasLength(dto.getPublisherName())? dto.getPublisherName() + "%" : null;
+
+        QueryExpressionDSL<SelectModel> statement = select(FirstCommentMapper.selectList)
+               .from(FirstCommentDynamicSqlSupport.firstComment);
+
+        if (content != null ) {
+            statement.where(FirstCommentDynamicSqlSupport.content, isLikeWhenPresent(content));
+        }
+        SelectStatementProvider firstStatement = statement
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        Page<FirstComment> queryPage = PageHelper.startPage(page, size);
+//        Page<FirstComment> queryPage = PageHelper.startPage(page, size);
         List<FirstComment> firstComments = firstCommentMapper.selectMany(firstStatement);
 
         List<CommentAdminVo> result = firstComments.stream().map(item -> {
@@ -351,21 +358,46 @@ public class CommentService {
             vo.setPublishTime(item.getPublishTime().getTime());
             vo.setContent(item.getContent());
             vo.setLikeNumber(item.getLikeNumber());
-            Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId()))
-                    .and(NewsDynamicSqlSupport.title,isLikeWhenPresent(title)));
-            if (news.isPresent()) {
-                vo.setNewsContent(news.get().getContent());
-                vo.setNewsTitle(news.get().getTitle());
-            } else {
-                return null;
+
+            if (title != null) {
+                Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId()))
+                        .and(NewsDynamicSqlSupport.title,isLikeWhenPresent(title)));
+                if (news.isPresent()) {
+                    vo.setNewsContent(news.get().getContent());
+                    vo.setNewsTitle(news.get().getTitle());
+                } else {
+                    return null;
+                }
             }
-            vo.setPublisher(queryUser(item.getPublisherId()));
+            if (publisherName!= null) {
+                Optional<User> user = userMapper.selectOne(s ->
+                        s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
+                                .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
+                );
+                if (user.isPresent()) {
+                    vo.setPublisher(user.get());
+                } else {
+                    return null;
+                }
+            }
             vo.setParentCommentContent(null);
             vo.setParentCommentId(-1);
             return vo;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-        queryPage.setTotal(result.size());
-        return generatePageInfo(queryPage, result);
+
+        PageInfo<CommentAdminVo> pageInfo = new PageInfo<>();
+        pageInfo.setPage(page);
+        int startPosition = page * size;
+        if (startPosition >= result.size()) {
+            pageInfo.setPageData(Collections.emptyList());
+            pageInfo.setTotalSize(0L);
+            return pageInfo;
+        }
+        int endPosition = Math.min(startPosition + size, result.size());
+        final List<CommentAdminVo> pageList = result.subList(page * size,endPosition);
+        pageInfo.setPageData(pageList);
+        pageInfo.setTotalSize((long) pageList.size());
+        return pageInfo;
     }
 
     /**
@@ -379,6 +411,8 @@ public class CommentService {
         final String content = StringUtils.hasLength(dto.getContent()) ? dto.getContent() + "%" : null;
 //        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
         final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
+
+        final String publisherName = StringUtils.hasLength(dto.getPublisherName())? dto.getPublisherName() + "%": null;
 //        Integer newsId = dto.getNewsId();
 
 //        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(FirstCommentMapper.selectList)
@@ -392,18 +426,18 @@ public class CommentService {
 //            }
 //            builder.and(FirstCommentDynamicSqlSupport.newsId, isEqualTo(newsId));
 //        }
+        QueryExpressionDSL<SelectModel> statement = select(SecondCommentMapper.selectList)
+                .from(SecondCommentDynamicSqlSupport.secondComment);
 
-//        SelectStatementProvider statement = builder
-//                .build()
-//                .render(RenderingStrategies.MYBATIS3);
-
-        SelectStatementProvider secondStatement = select(SecondCommentMapper.selectList)
-                .from(SecondCommentDynamicSqlSupport.secondComment)
-                .where(SecondCommentDynamicSqlSupport.content,isLikeWhenPresent(content))
+        if (content != null ) {
+            statement.where(SecondCommentDynamicSqlSupport.content, isLikeWhenPresent(content));
+        }
+        SelectStatementProvider secondStatement = statement
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
-        Page<SecondComment> queryPage = PageHelper.startPage(page, size);
+
+//        Page<SecondComment> queryPage = PageHelper.startPage(page, size);
 //        List<FirstComment> firstComments = firstCommentMapper.selectMany(statement);
         List<SecondComment> secondComments = secondCommentMapper.selectMany(secondStatement);
 
@@ -413,28 +447,52 @@ public class CommentService {
             if (firstComment.isPresent()) {
                 vo.setParentCommentId(firstComment.get().getCommentId());
                 vo.setParentCommentContent(firstComment.get().getContent());
+                // 选出符合 title 的新闻
+                if (title != null) {
+                    Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(firstComment.get().getNewsId()))
+                            .and(NewsDynamicSqlSupport.title, isLikeWhenPresent(title)));
 
-                Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(firstComment.get().getNewsId()))
-                        .and(NewsDynamicSqlSupport.title,isLikeWhenPresent(title)));
-                if (news.isPresent()) {
-                    vo.setNewsContent(news.get().getContent());
-                    vo.setNewsTitle(news.get().getTitle());
-                } else {
-                    return null;
+                    if (news.isPresent()) {
+                        vo.setNewsContent(news.get().getContent());
+                        vo.setNewsTitle(news.get().getTitle());
+                    } else {
+                        return null;
+                    }
+                }
+                // 符合 publisherName 的用户
+                if (publisherName != null) {
+                    Optional<User> publisher = userMapper.selectOne(s ->
+                            s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
+                                    .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
+                    );
+                    if (publisher.isPresent()) {
+                        vo.setPublisher(publisher.get());
+                    } else {
+                        return null;
+                    }
                 }
             }
-            vo.setPublisher(queryUser(item.getPublisherId()));
-
             vo.setCommentId(item.getCommentId());
             vo.setPublishTime(item.getPublishTime().getTime());
             vo.setContent(item.getContent());
             vo.setLikeNumber(item.getLikeNumber());
-
             return vo;
         }).filter(Objects::nonNull).collect(Collectors.toList());
 
-        queryPage.setTotal(result.size());
-        return generatePageInfo(queryPage, result);
+        // 分页处理
+        PageInfo<CommentAdminVo> pageInfo = new PageInfo<>();
+        pageInfo.setPage(page);
+        int startPosition = page * size;
+        if (startPosition >= result.size()) {
+            pageInfo.setPageData(Collections.emptyList());
+            pageInfo.setTotalSize(0L);
+            return pageInfo;
+        }
+        int endPosition = Math.min(startPosition + size, result.size());
+        final List<CommentAdminVo> pageList = result.subList(page * size,endPosition);
+        pageInfo.setPageData(pageList);
+        pageInfo.setTotalSize((long) pageList.size());
+        return pageInfo;
     }
 
     /**

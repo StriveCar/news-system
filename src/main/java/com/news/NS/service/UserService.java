@@ -168,7 +168,11 @@ public class UserService {
 
         Page<User> queryDataPage = PageHelper.startPage(page, size);
         List<User> userList = userMapper.selectMany(queryStatement);
-        userList.forEach(user -> user.setPassword(null));
+        userList.forEach(user -> {
+            user.setPassword(null);
+            String tel = CommonUtils.encodeTel(user.getPhoneNumber());
+            user.setPhoneNumber(tel);
+        });
         PageInfo<User> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
         pageInfo.setPageData(userList);
@@ -198,6 +202,9 @@ public class UserService {
         if (StringUtils.hasLength(userMapper.isTelExisted(userUpdateDTO.getPhoneNumber(), userIdContext))) {
             errorMsg += userUpdateDTO.getPhoneNumber() + "手机号已被使用,";
             throw new AlertException(1000, errorMsg);
+        }
+        if (userMapper.count(c->c.where(UserDynamicSqlSupport.account, isEqualTo(userUpdateDTO.getAccount()))) > 0) {
+            throw new AlertException(1000, "账号" + userUpdateDTO.getAccount() + "已被注册");
         }
         // 获取用户24小时可更新个人信息次数
         Integer leftUpdateTimes = redisCacheUtil.getCacheObject(userUpdateDTO.getUserId() + "updateInfo");

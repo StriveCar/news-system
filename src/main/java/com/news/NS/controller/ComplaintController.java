@@ -33,9 +33,10 @@ public class ComplaintController {
     public void addComplaint(@Valid @RequestBody ComplaintCreateDTO complaintCreateDTO){
         complaintService.addNewComplaint(complaintCreateDTO);
     }
+  
     @PostMapping("/complaint/delete")
     @ApiOperation(value = "删除举报")
-    @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
+    @SaCheckRole(value = {CommonConstant.SUPER_ADMIN})
     public void deleteComplaint(@Valid @RequestBody ComplaintDeleteDTO dto){
         complaintService.deleteComplaint(dto);
     }

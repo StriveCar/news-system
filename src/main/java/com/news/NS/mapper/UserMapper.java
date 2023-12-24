@@ -218,7 +218,7 @@ public interface UserMapper {
         );
     }
 
-    @Select("select phoneNumber from user_info where phoneNumber = #{phoneNumber} and userId != #{userId}")
+    @Select("select phone_number from user_info where phone_number = #{phoneNumber} and user_id != #{userId}")
     String isTelExisted(@Param("phoneNumber") String phoneNumber, @Param("userId") String userId);
 
     @Select("SELECT username,count(*) as newsCount,sum(news_views) as viewsSum,sum(like_number) as likeSum FROM user_info JOIN news ON user_info.user_id = news.publisher_id GROUP BY news.publisher_id ORDER BY viewsSum DESC LIMIT 7")
@@ -226,4 +226,11 @@ public interface UserMapper {
 
     @Select("SELECT COUNT(*) AS count FROM user_info GROUP BY identification")
     List<Integer> selectRoleCount();
+
+    @Select("select username from user_info where user_id=#{userId}")
+    String selectUsernameById(Integer userId);
+
+    @Select("select avatar_url from user_info where user_id=#{userId}")
+    String selectAvatarUrlById(Integer userId);
+
 }

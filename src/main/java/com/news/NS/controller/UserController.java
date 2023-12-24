@@ -11,6 +11,7 @@ import com.news.NS.domain.dto.User.*;
 import com.news.NS.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,13 +34,13 @@ public class UserController {
 
     @PostMapping("/user/login")
     @ApiOperation(value = "用户登录")
-    public Map<String, Object> loginApi(@RequestBody UserLoginDTO userLoginDTO) {
+    public Map<String, Object> loginApi(@Valid @RequestBody UserLoginDTO userLoginDTO) {
         return userService.login(userLoginDTO);
     }
 
     @PostMapping("/user/register")
     @ApiOperation(value = "用户注册")
-    public Map<String, Object> registerApi(@RequestBody UserRegisterDTO userRegisterDTO) {
+    public Map<String, Object> registerApi(@Valid @RequestBody  UserRegisterDTO userRegisterDTO) {
         return userService.register(userRegisterDTO);
     }
 
@@ -63,7 +64,7 @@ public class UserController {
 
     @GetMapping("/user/get/verifyCode")
     @ApiOperation(value = "获取六位验证码")
-    public void getVerifyCodeApi(@RequestParam("tel") String tel) {
+    public void getVerifyCodeApi(@Length(min = 11,max = 11) @RequestParam("tel") String tel) {
         userService.getVerifyCode(tel);
     }
 
@@ -75,7 +76,7 @@ public class UserController {
 
     @PostMapping("/admin/login")
     @ApiOperation(value = "管理员登录")
-    public Map<String, Object> adminLoginApi(@RequestBody UserLoginDTO userLoginDTO) {
+    public Map<String, Object> adminLoginApi(@Valid @RequestBody UserLoginDTO userLoginDTO) {
         return userService.adminLogin(userLoginDTO);
     }
 
@@ -88,7 +89,7 @@ public class UserController {
     @PostMapping("/admin/update/role")
     @ApiOperation(value = "更改用户权限")
     @SaCheckRole(value = {CommonConstant.ADMIN,CommonConstant.SUPER_ADMIN},mode = SaMode.OR)
-    public void changeRoleApi(@RequestBody UserRoleChangeDTO userRoleChangeDTO) {
+    public void changeRoleApi(@Valid @RequestBody UserRoleChangeDTO userRoleChangeDTO) {
         userService.changeUserRole(userRoleChangeDTO.getUserId(), userRoleChangeDTO.getIdentification());
     }
 

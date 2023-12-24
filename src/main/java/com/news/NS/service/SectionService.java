@@ -18,6 +18,7 @@ import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,9 @@ public class SectionService {
     private NewsMapper newsMapper;
 
     public Section addSection(String sectionName) {
+        if (!StringUtils.hasLength(sectionName)){
+            throw new AlertException(ResultCode.PARAM_IS_INVALID);
+        }
         if (sectionMapper.count(c -> c.where(SectionDynamicSqlSupport.sectionName, isEqualTo(sectionName))) != 0) {
             throw new AlertException(ResultCode.SECTION_EXIST);
         }
