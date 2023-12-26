@@ -344,12 +344,12 @@ public class CommentService {
 //        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
         final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 
-        final String publisherName = StringUtils.hasLength(dto.getPublisherName()) ? dto.getPublisherName() + "%" : null;
+        final String publisherName = StringUtils.hasLength(dto.getPublisherName())? dto.getPublisherName() + "%" : null;
 
         QueryExpressionDSL<SelectModel> statement = select(FirstCommentMapper.selectList)
-                .from(FirstCommentDynamicSqlSupport.firstComment);
+               .from(FirstCommentDynamicSqlSupport.firstComment);
 
-        if (content != null) {
+        if (content != null ) {
             statement.where(FirstCommentDynamicSqlSupport.content, isLikeWhenPresent(content));
         }
         SelectStatementProvider firstStatement = statement
@@ -408,7 +408,7 @@ public class CommentService {
 
     /**
      * 返回管理端所需要的所有二级评论
-     * <p>
+     *
      * 不支持根据新闻id查找
      */
     public PageInfo<CommentAdminVo> querySecondCommentAdminList(CommentListAdminQueryDTO dto) {
@@ -418,7 +418,7 @@ public class CommentService {
 //        final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
         final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 
-        final String publisherName = StringUtils.hasLength(dto.getPublisherName()) ? dto.getPublisherName() + "%" : null;
+        final String publisherName = StringUtils.hasLength(dto.getPublisherName())? dto.getPublisherName() + "%": null;
 //        Integer newsId = dto.getNewsId();
 
 //        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(FirstCommentMapper.selectList)

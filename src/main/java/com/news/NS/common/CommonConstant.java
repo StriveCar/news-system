@@ -16,6 +16,8 @@ public interface CommonConstant {
     Byte NEWS_ISSUE = 2;//新闻发布状态
     Byte NEWS_CANCEL_ISSUE = 3;//新闻取消发布状态
     Byte NEWS_DISABLE = 4;//新闻禁用状态
+    Byte NEWS_REVIEWING = 5;//新闻审核中
+    Byte NEWS_REVIEW_REJECT = 6;//新闻审核不通过
 
     Byte APPLICATION_NOTPASS = 1;//新闻编辑申请审核状态
     Byte APPLICATION_PASS = 2;//新闻编辑申请通过

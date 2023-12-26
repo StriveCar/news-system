@@ -2,6 +2,7 @@ package com.news.NS.service;
 
 
 import com.news.NS.common.AlertException;
+import com.news.NS.common.CommonConstant;
 import com.news.NS.common.domain.ResultCode;
 import com.news.NS.domain.Collect;
 import com.news.NS.domain.News;
@@ -72,7 +73,7 @@ public class UserInteractService {
     public Map<String, Object> addCollectInfo(Collect collect) {
         Integer newsId = collect.getNewsId();
         Integer userId = collect.getUserId();
-        if (newsMapper.count(c -> c.where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId)).and(NewsDynamicSqlSupport.publishStatus,isEqualTo((byte) 2))) <= 0) { // 数据库不存在该 newsId
+        if (newsMapper.count(c -> c.where(NewsDynamicSqlSupport.newsId, isEqualTo(newsId)).and(NewsDynamicSqlSupport.publishStatus,isEqualTo(CommonConstant.NEWS_ISSUE))) <= 0) { // 数据库不存在该 newsId
             throw new AlertException(ResultCode.PARAM_IS_INVALID.code(), "该新闻不存在");
         }
         if (userMapper.count(c -> c.where(UserDynamicSqlSupport.userId, isEqualTo(userId))) <= 0) {
