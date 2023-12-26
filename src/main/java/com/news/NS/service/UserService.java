@@ -97,7 +97,7 @@ public class UserService {
         SelectStatementProvider userIdStatement = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
                 .where(UserDynamicSqlSupport.phoneNumber, isEqualTo(userRegisterDTO.getTel()))
-                .and(UserDynamicSqlSupport.account,isEqualTo(userRegisterDTO.getAct()))
+                .and(UserDynamicSqlSupport.account, isEqualTo(userRegisterDTO.getAct()))
                 .build().render(RenderingStrategies.MYBATIS3);
         // 用户登录
         user.setUserId(userMapper.selectOne(userIdStatement).get().getUserId());
@@ -117,7 +117,7 @@ public class UserService {
         SelectStatementProvider queryStatement = select(UserMapper.selectList)
                 .from(UserDynamicSqlSupport.user)
                 .where(UserDynamicSqlSupport.account, isEqualTo(userLoginDTO.getAct()))
-                .or(UserDynamicSqlSupport.phoneNumber,isEqualTo(userLoginDTO.getAct()))
+                .or(UserDynamicSqlSupport.phoneNumber, isEqualTo(userLoginDTO.getAct()))
                 .and(UserDynamicSqlSupport.password, isEqualTo(pwd))
                 .build().render(RenderingStrategies.MYBATIS3);
         Optional<User> userOptional = userMapper.selectOne(queryStatement);
@@ -171,8 +171,10 @@ public class UserService {
         List<User> userList = userMapper.selectMany(queryStatement);
         userList.forEach(user -> {
             user.setPassword(null);
-            String tel = CommonUtils.encodeTel(user.getPhoneNumber());
-            user.setPhoneNumber(tel);
+            if (user.getPhoneNumber() != null) {
+                String tel = CommonUtils.encodeTel(user.getPhoneNumber());
+                user.setPhoneNumber(tel);
+            }
         });
         PageInfo<User> pageInfo = new PageInfo<>();
         pageInfo.setPage(page);
@@ -204,7 +206,7 @@ public class UserService {
             errorMsg += userUpdateDTO.getPhoneNumber() + "手机号已被使用,";
             throw new AlertException(1000, errorMsg);
         }
-        if (userMapper.count(c->c.where(UserDynamicSqlSupport.account, isEqualTo(userUpdateDTO.getAccount()))) > 0) {
+        if (userMapper.count(c -> c.where(UserDynamicSqlSupport.account, isEqualTo(userUpdateDTO.getAccount()))) > 0) {
             throw new AlertException(1000, "账号" + userUpdateDTO.getAccount() + "已被注册");
         }
         // 获取用户24小时可更新个人信息次数
@@ -260,7 +262,7 @@ public class UserService {
             throw new AlertException(ResultCode.OPERATE_OBJECT_NOT_SELF);
         }
         Byte adminrole = Byte.valueOf(StpUtil.getRoleList().get(0));
-        if (adminrole.intValue() <= identification.intValue()){
+        if (adminrole.intValue() <= identification.intValue()) {
             throw new AlertException(ResultCode.OPERATE_OBJECT_NOT_SELF);
         }
         Optional<User> optionalUser = userMapper.selectByPrimaryKey(userId);

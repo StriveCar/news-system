@@ -96,10 +96,9 @@ public class ComplaintService {
         final String name = StringUtils.hasLength(dto.getName()) ? dto.getName() + "%" : null;
         final String title = StringUtils.hasLength(dto.getTitle()) ? dto.getTitle() + "%" : null;
 
-
         SelectStatementProvider selectStatement = select(complaintMapper.selectList)
                 .from(ComplaintDynamicSqlSupport.complaint)
-                .where(ComplaintDynamicSqlSupport.complaintReason,isLike(reason))
+                .where(ComplaintDynamicSqlSupport.complaintReason,isLikeWhenPresent(reason))
                 .build().render(RenderingStrategies.MYBATIS3);
 
         List<Complaint> complaints = complaintMapper.selectMany(selectStatement);

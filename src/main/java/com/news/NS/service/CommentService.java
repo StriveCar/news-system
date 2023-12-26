@@ -367,27 +367,25 @@ public class CommentService {
             vo.setContent(item.getContent());
             vo.setLikeNumber(item.getLikeNumber());
 
-            if (title != null) {
-                Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId()))
-                        .and(NewsDynamicSqlSupport.title, isLikeWhenPresent(title)));
-                if (news.isPresent()) {
-                    vo.setNewsContent(news.get().getContent());
-                    vo.setNewsTitle(news.get().getTitle());
-                } else {
-                    return null;
-                }
+            Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(item.getNewsId()))
+                    .and(NewsDynamicSqlSupport.title, isLikeWhenPresent(title)));
+            if (news.isPresent()) {
+                vo.setNewsContent(news.get().getContent());
+                vo.setNewsTitle(news.get().getTitle());
+            } else {
+                return null;
             }
-            if (publisherName != null) {
-                Optional<User> user = userMapper.selectOne(s ->
-                        s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
-                                .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
-                );
-                if (user.isPresent()) {
-                    vo.setPublisher(user.get());
-                } else {
-                    return null;
-                }
+
+            Optional<User> user = userMapper.selectOne(s ->
+                    s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
+                            .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
+            );
+            if (user.isPresent()) {
+                vo.setPublisher(user.get());
+            } else {
+                return null;
             }
+
             vo.setParentCommentContent(null);
             vo.setParentCommentId(-1);
             return vo;
@@ -402,7 +400,7 @@ public class CommentService {
             return pageInfo;
         }
         int endPosition = Math.min(startPosition + size, result.size());
-        final List<CommentAdminVo> pageList = result.subList(page * size, endPosition);
+        final List<CommentAdminVo> pageList = result.subList(startPosition, endPosition);
         pageInfo.setPageData(pageList);
         pageInfo.setTotalSize((long) pageList.size());
         return pageInfo;
@@ -456,30 +454,30 @@ public class CommentService {
                 vo.setParentCommentId(firstComment.get().getCommentId());
                 vo.setParentCommentContent(firstComment.get().getContent());
                 // 选出符合 title 的新闻
-                if (title != null) {
-                    Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(firstComment.get().getNewsId()))
-                            .and(NewsDynamicSqlSupport.title, isLikeWhenPresent(title)));
 
-                    if (news.isPresent()) {
-                        vo.setNewsContent(news.get().getContent());
-                        vo.setNewsTitle(news.get().getTitle());
-                    } else {
-                        return null;
-                    }
+                Optional<News> news = newsMapper.selectOne(s -> s.where(NewsDynamicSqlSupport.newsId, isEqualTo(firstComment.get().getNewsId()))
+                        .and(NewsDynamicSqlSupport.title, isLikeWhenPresent(title)));
+
+                if (news.isPresent()) {
+                    vo.setNewsContent(news.get().getContent());
+                    vo.setNewsTitle(news.get().getTitle());
+                } else {
+                    return null;
                 }
+
                 // 符合 publisherName 的用户
-                if (publisherName != null) {
-                    Optional<User> publisher = userMapper.selectOne(s ->
-                            s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
-                                    .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
-                    );
-                    if (publisher.isPresent()) {
-                        vo.setPublisher(publisher.get());
-                    } else {
-                        return null;
-                    }
+
+                Optional<User> publisher = userMapper.selectOne(s ->
+                        s.where(UserDynamicSqlSupport.userId, isEqualTo(item.getPublisherId()))
+                                .and(UserDynamicSqlSupport.username, isLikeWhenPresent(publisherName))
+                );
+                if (publisher.isPresent()) {
+                    vo.setPublisher(publisher.get());
+                } else {
+                    return null;
                 }
             }
+
             vo.setCommentId(item.getCommentId());
             vo.setPublishTime(item.getPublishTime().getTime());
             vo.setContent(item.getContent());
@@ -497,7 +495,7 @@ public class CommentService {
             return pageInfo;
         }
         int endPosition = Math.min(startPosition + size, result.size());
-        final List<CommentAdminVo> pageList = result.subList(page * size, endPosition);
+        final List<CommentAdminVo> pageList = result.subList(startPosition, endPosition);
         pageInfo.setPageData(pageList);
         pageInfo.setTotalSize((long) pageList.size());
         return pageInfo;

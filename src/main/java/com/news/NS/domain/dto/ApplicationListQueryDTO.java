@@ -21,8 +21,8 @@ public class ApplicationListQueryDTO {
     @Range(min = 1, max = 100)
     private Integer size;
 
+    @NotNull
     private Byte status;
-    private Integer userId;
     private String reason;
     private String name;
 }

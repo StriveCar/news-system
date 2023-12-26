@@ -59,6 +59,7 @@ public class SectionService {
         section.setSectionId(sectionMapper.selectOne(c ->
                         c.where(SectionDynamicSqlSupport.sectionName, isEqualTo(sectionName)))
                 .get().getSectionId());
+
         return section;
     }
 
